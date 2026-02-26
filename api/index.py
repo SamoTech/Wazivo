@@ -6,20 +6,42 @@ import re
 from urllib.error import HTTPError, URLError
 
 class handler(BaseHTTPRequestHandler):
+    def _set_headers(self, status=200, content_type='application/json'):
+        self.send_response(status)
+        self.send_header('Content-Type', content_type)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+    
+    def do_OPTIONS(self):
+        self._set_headers()
+    
+    def do_GET(self):
+        # Health check
+        self._set_headers()
+        response = {'status': 'ok', 'service': 'scrapling-lite'}
+        self.wfile.write(json.dumps(response).encode('utf-8'))
+    
     def do_POST(self):
-        # Read request body
-        content_length = int(self.headers.get('Content-Length', 0))
-        body = self.rfile.read(content_length)
-        
         try:
+            # Read request body
+            content_length = int(self.headers.get('Content-Length', 0))
+            if content_length == 0:
+                self._set_headers(400)
+                self.wfile.write(json.dumps({'error': 'Empty request body'}).encode('utf-8'))
+                return
+            
+            body = self.rfile.read(content_length)
             data = json.loads(body.decode('utf-8'))
             url = data.get('url')
             
             if not url:
-                self.send_error(400, 'URL is required')
+                self._set_headers(400)
+                self.wfile.write(json.dumps({'error': 'URL is required'}).encode('utf-8'))
                 return
             
-            # Fetch the URL with better headers
+            # Fetch the URL
             req = urllib.request.Request(
                 url,
                 headers={
@@ -55,41 +77,37 @@ class handler(BaseHTTPRequestHandler):
                 content = re.sub(r'\s+', ' ', content).strip()
                 
                 if len(content) < 200:
-                    raise ValueError('Insufficient text extracted')
+                    self._set_headers(400)
+                    self.wfile.write(json.dumps({
+                        'error': 'Insufficient text extracted (less than 200 characters)'
+                    }).encode('utf-8'))
+                    return
                 
-                # Return response
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                
+                # Return success response
+                self._set_headers(200)
                 response_data = {
                     'text': content[:10000],
                     'success': True
                 }
-                
                 self.wfile.write(json.dumps(response_data).encode('utf-8'))
                 
         except HTTPError as e:
-            self.send_response(400)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            error_msg = f'HTTP {e.code}: {e.reason}. Try uploading the file directly.'
+            self._set_headers(400)
+            error_msg = f'HTTP {e.code}: {e.reason}'
+            if e.code == 999:
+                error_msg = 'Website blocked automated access (999). Try uploading the file directly.'
+            elif e.code == 403:
+                error_msg = 'Access denied (403). Try uploading the file directly.'
             self.wfile.write(json.dumps({'error': error_msg}).encode('utf-8'))
             
+        except URLError as e:
+            self._set_headers(400)
+            self.wfile.write(json.dumps({'error': f'Network error: {str(e.reason)}'}).encode('utf-8'))
+            
+        except json.JSONDecodeError:
+            self._set_headers(400)
+            self.wfile.write(json.dumps({'error': 'Invalid JSON in request body'}).encode('utf-8'))
+            
         except Exception as e:
-            self.send_response(400)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            error_msg = f'Extraction failed: {str(e)}. Try uploading the file directly.'
-            self.wfile.write(json.dumps({'error': error_msg}).encode('utf-8'))
-    
-    def do_GET(self):
-        # Health check
-        if self.path == '/api/scrapling/health' or self.path == '/health':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({'status': 'ok'}).encode('utf-8'))
-        else:
-            self.send_response(404)
-            self.end_headers()
+            self._set_headers(500)
+            self.wfile.write(json.dumps({'error': f'Server error: {str(e)}'}).encode('utf-8'))
