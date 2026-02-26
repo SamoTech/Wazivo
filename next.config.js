@@ -1,13 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
+  // Server Actions are now stable by default in Next.js 14
+  // Body size limit is handled at the route level
 };
 
 module.exports = nextConfig;
