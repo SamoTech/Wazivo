@@ -36,7 +36,7 @@ export default function Home() {
             </h1>
           </div>
           <p className="text-2xl font-semibold text-gray-700 mb-2">Get Hired, Get Wazivo</p>
-          <p className="text-lg text-gray-600">AI-powered resume analysis, job matching & career intelligence</p>
+          <p className="text-lg text-gray-600">Lightning-fast AI resume analysis powered by Groq</p>
         </header>
 
         {error && (
@@ -57,7 +57,7 @@ export default function Home() {
         ) : <FileUpload onUpload={handleAnalyze}/>}
 
         <footer className="mt-16 text-center text-gray-500 text-sm">
-          <p>Built with ❤️ by SamoTech | Powered by AI</p>
+          <p>Built with ❤️ by SamoTech | Powered by Groq's Lightning-Fast AI ⚡</p>
         </footer>
       </div>
     </main>
