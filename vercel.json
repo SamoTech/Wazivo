@@ -5,5 +5,5 @@
       "destination": "/api/index.py"
     }
   ],
-  "buildCommand": "npm run build && pip install scrapling[fetchers] --break-system-packages && python -m scrapling install"
+  "buildCommand": "npm run build && pip install scrapling[fetchers] --break-system-packages && python -m playwright install chromium && python -m patchright install chromium"
 }
