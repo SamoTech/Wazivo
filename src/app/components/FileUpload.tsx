@@ -33,11 +33,11 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
     <div className="max-w-2xl mx-auto">
       <div className="flex gap-2 mb-4">
         <button onClick={() => setUploadType('file')}
-          className={\`px-4 py-2 rounded-lg \${uploadType === 'file' ? 'bg-blue-600 text-white' : 'bg-gray-100'}\`}>
+          className={`px-4 py-2 rounded-lg ${uploadType === 'file' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>
           <FileText className="w-4 h-4 inline mr-2"/>File Upload
         </button>
         <button onClick={() => setUploadType('url')}
-          className={\`px-4 py-2 rounded-lg \${uploadType === 'url' ? 'bg-blue-600 text-white' : 'bg-gray-100'}\`}>
+          className={`px-4 py-2 rounded-lg ${uploadType === 'url' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>
           <LinkIcon className="w-4 h-4 inline mr-2"/>URL
         </button>
       </div>
@@ -45,7 +45,7 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
       {uploadType === 'file' ? (
         <div onDrop={handleDrop} onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
           onDragLeave={() => setIsDragging(false)}
-          className={\`border-2 border-dashed rounded-xl p-12 text-center transition \${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}\`}>
+          className={`border-2 border-dashed rounded-xl p-12 text-center transition ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
           <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400"/>
           <p className="text-lg mb-2">Drag & drop your CV or</p>
           <label className="cursor-pointer inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
