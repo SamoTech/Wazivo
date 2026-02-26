@@ -1,5 +1,5 @@
 'use client';
-import { Upload, FileText, Link as LinkIcon } from 'lucide-react';
+import { Upload, FileText, Link as LinkIcon, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function FileUpload({ onUpload }: { onUpload: (data: FormData) => void }) {
@@ -54,16 +54,39 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
               onChange={e => e.target.files?.[0] && processFile(e.target.files[0])}/>
           </label>
           <p className="text-sm text-gray-500 mt-4">PDF, DOCX, DOC, or images (max 10MB)</p>
+          <div className="mt-6 text-xs text-gray-400">
+            <p>✨ Recommended: Upload files directly for best results</p>
+          </div>
         </div>
       ) : (
         <div className="border-2 border-gray-300 rounded-xl p-8">
           <input type="url" value={url} onChange={e => setUrl(e.target.value)}
-            placeholder="https://example.com/cv.pdf"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4"/>
+            placeholder="https://example.com/resume.pdf"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-3"/>
+          
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-left">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"/>
+              <div className="text-blue-800">
+                <p className="font-medium mb-1">URL Requirements:</p>
+                <ul className="text-xs space-y-1 text-blue-700">
+                  <li>• Must be a direct link to a PDF or DOCX file</li>
+                  <li>• File must be publicly accessible (no login required)</li>
+                  <li>• LinkedIn profiles don't work (download your CV first)</li>
+                  <li>• Example: https://yoursite.com/resume.pdf</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
           <button onClick={handleURLSubmit}
             className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
             Analyze from URL
           </button>
+          
+          <p className="text-xs text-gray-500 mt-3 text-center">
+            Having issues? <button onClick={() => setUploadType('file')} className="text-blue-600 hover:underline">Upload file directly instead</button>
+          </p>
         </div>
       )}
     </div>
