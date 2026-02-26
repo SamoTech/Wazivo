@@ -1,14 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/main.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/scrapling/(.*)",
-      "dest": "/api/main.py"
+      "source": "/api/scrapling",
+      "destination": "/api/main.py"
     }
   ]
 }
