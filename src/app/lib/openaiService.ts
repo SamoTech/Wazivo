@@ -1,35 +1,41 @@
 import OpenAI from 'openai';
 import { AnalysisReport } from '../types';
 
-const MODEL = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
+// Groq configuration
+const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_API_BASE = 'https://api.groq.com/openai/v1';
 
 // Lazy initialization - only create client when needed
-let openaiClient: OpenAI | null = null;
+let groqClient: OpenAI | null = null;
 
-function getOpenAIClient(): OpenAI {
-  if (!openaiClient) {
-    const apiKey = process.env.OPENAI_API_KEY;
+function getGroqClient(): OpenAI {
+  if (!groqClient) {
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is required');
+      throw new Error('GROQ_API_KEY environment variable is required. Get your API key from https://console.groq.com');
     }
-    openaiClient = new OpenAI({ apiKey });
+    // Groq uses OpenAI-compatible API
+    groqClient = new OpenAI({ 
+      apiKey,
+      baseURL: GROQ_API_BASE
+    });
   }
-  return openaiClient;
+  return groqClient;
 }
 
 export async function analyzeResume(cvText: string): Promise<AnalysisReport> {
-  const openai = getOpenAIClient();
+  const groq = getGroqClient();
   
   const systemPrompt = `Analyze this CV and return JSON with: candidateSummary{name,title,experience,keySkills[],location}, weaknessesAndGaps[{category,gap,impact,priority}], recommendedCourses[{title,platform,duration,level,link,addressesGap,skills[],cost}], marketInsights{demandLevel,avgSalaryRange,trendingSkills[]}. Be specific with real course links.`;
 
-  const response = await openai.chat.completions.create({
+  const response = await groq.chat.completions.create({
     model: MODEL,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Analyze: ${cvText}` }
     ],
     temperature: 0.7,
-    max_tokens: 3000,
+    max_tokens: 4000,
     response_format: { type: 'json_object' },
   });
 
