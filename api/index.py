@@ -1,6 +1,47 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import re
+import os
+import subprocess
+import sys
+
+# ──────────────────────────────────────────────────────────────
+# Install browsers at runtime if missing (Vercel sandboxes don't
+# persist the build filesystem into function execution)
+# ──────────────────────────────────────────────────────────────
+def ensure_browsers_installed():
+    """Check if Playwright/Patchright Chromium exists; install if not."""
+    chrome_paths = [
+        os.path.expanduser('~/.cache/ms-playwright/chromium-1194/chrome-linux/chrome'),
+        os.path.expanduser('~/.cache/ms-playwright/chromium-1169/chrome-linux/chrome'),
+        os.path.expanduser('~/.cache/ms-playwright/chromium-1148/chrome-linux/chrome'),
+    ]
+    patchright_paths = [
+        os.path.expanduser('~/.cache/ms-patchright/chromium-1194/chrome-linux/chrome'),
+        os.path.expanduser('~/.cache/ms-patchright/chromium-1169/chrome-linux/chrome'),
+    ]
+
+    all_paths = chrome_paths + patchright_paths
+    if any(os.path.exists(p) for p in all_paths):
+        return True  # already installed
+
+    try:
+        subprocess.run(
+            [sys.executable, '-m', 'playwright', 'install', 'chromium'],
+            check=True, capture_output=True, timeout=120
+        )
+        subprocess.run(
+            [sys.executable, '-m', 'patchright', 'install', 'chromium'],
+            check=True, capture_output=True, timeout=120
+        )
+        return True
+    except Exception as e:
+        print(f'[scrapling] Browser install failed: {e}', flush=True)
+        return False
+
+
+# Run browser install check once at module load (cold start)
+_browsers_ready = ensure_browsers_installed()
 
 try:
     from scrapling.fetchers import StealthyFetcher, Fetcher
@@ -9,11 +50,9 @@ except ImportError:
     SCRAPLING_AVAILABLE = False
 
 import urllib.request
-from urllib.error import HTTPError, URLError
+from urllib.error import HTTPError
 
 
-# ──────────────────────────────────────────────────────────────
-# Domains that need StealthyFetcher (full headless + stealth)
 # ──────────────────────────────────────────────────────────────
 STEALTH_DOMAINS = [
     'linkedin.com', 'glassdoor.com', 'indeed.com',
@@ -29,8 +68,6 @@ def is_linkedin(url: str) -> bool:
 
 # ──────────────────────────────────────────────────────────────
 # LinkedIn structured profile extraction
-# Uses Scrapling CSS selectors on the rendered DOM
-# Returns a rich text block formatted for AI analysis
 # ──────────────────────────────────────────────────────────────
 def extract_linkedin_profile(page) -> str:
     sections = []
@@ -48,34 +85,17 @@ def extract_linkedin_profile(page) -> str:
         except Exception:
             return []
 
-    # ── Name & Headline ──────────────────────────────────────
-    name = (
-        safe_get('h1') or
-        safe_get('.text-heading-xlarge') or
-        safe_get('[data-anonymize="person-name"]') or
-        safe_get('.pv-top-card--list li:first-child')
-    )
-    headline = (
-        safe_get('.text-body-medium.break-words') or
-        safe_get('[data-field="headline"]') or
-        safe_get('.pv-top-card-section__headline')
-    )
-    location = (
-        safe_get('.text-body-small.inline.t-black--light.break-words') or
-        safe_get('[data-field="location"]') or
-        safe_get('.pv-top-card--list-bullet li')
-    )
+    # Name & Headline
+    name = safe_get('h1') or safe_get('.text-heading-xlarge') or safe_get('[data-anonymize="person-name"]')
+    headline = safe_get('.text-body-medium.break-words') or safe_get('[data-field="headline"]')
+    location = safe_get('.text-body-small.inline.t-black--light.break-words') or safe_get('[data-field="location"]')
 
-    if name:
-        sections.append(f"NAME: {name}")
-    if headline:
-        sections.append(f"HEADLINE: {headline}")
-    if location:
-        sections.append(f"LOCATION: {location}")
+    if name:    sections.append(f"NAME: {name}")
+    if headline: sections.append(f"HEADLINE: {headline}")
+    if location: sections.append(f"LOCATION: {location}")
 
-    # ── About / Summary ──────────────────────────────────────
+    # About
     about = (
-        safe_get('.display-flex.ph5.pv3 div.pv-shared-text-with-see-more span[aria-hidden="true"]') or
         safe_get('#about ~ * .pv-shared-text-with-see-more') or
         safe_get('.pv-about__summary-text') or
         safe_get('[data-field="summary"]')
@@ -83,146 +103,89 @@ def extract_linkedin_profile(page) -> str:
     if about:
         sections.append(f"\nABOUT:\n{about}")
 
-    # ── Experience ───────────────────────────────────────────
+    # Helper: extract section by heading text
+    def extract_section(heading_texts, max_items=10):
+        items = []
+        for heading in heading_texts:
+            try:
+                raw = page.find_by_text(heading, tag='span') or page.find_by_text(heading, tag='h2')
+                if raw:
+                    parent = raw.parent.parent if raw.parent else None
+                    if parent:
+                        texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
+                        items = [t for t in texts if t and len(t) > 3][:max_items]
+                        if items:
+                            break
+            except Exception:
+                continue
+        return items
+
+    # Experience
     exp_items = []
-
-    # Try modern LinkedIn structure
-    exp_containers = page.css('section[data-section="experience"] ul li') or \
-                     page.css('#experience ~ * ul li') or \
-                     page.css('.pvs-list__item--line-separated')
-
-    for item in exp_containers[:10]:
+    for item in (page.css('section[data-section="experience"] ul li') or
+                 page.css('#experience ~ * ul li') or [])[:10]:
         text = item.get_all_text(strip=True)
         if text and len(text) > 10:
-            # Clean up excessive whitespace
-            text = re.sub(r'\s{3,}', ' · ', text)
-            exp_items.append(f"  - {text}")
+            exp_items.append(f"  - {re.sub(r'\\s{3,}', ' · ', text)}")
 
-    # Fallback: grab all span texts near experience section
     if not exp_items:
-        try:
-            raw = page.find_by_text('Experience', tag='span') or \
-                  page.find_by_text('Experience', tag='h2')
-            if raw:
-                parent = raw.parent.parent if raw.parent else None
-                if parent:
-                    texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
-                    exp_items = [f"  - {t}" for t in texts if t and len(t) > 5][:20]
-        except Exception:
-            pass
+        raw = extract_section(['Experience'], max_items=30)
+        exp_items = [f"  - {t}" for t in raw if len(t) > 5][:15]
 
     if exp_items:
         sections.append(f"\nEXPERIENCE:\n" + "\n".join(exp_items))
 
-    # ── Education ────────────────────────────────────────────
+    # Education
     edu_items = []
-    edu_containers = page.css('section[data-section="education"] ul li') or \
-                     page.css('#education ~ * ul li') or \
-                     page.css('.pv-education-entity')
-
-    for item in edu_containers[:6]:
+    for item in (page.css('section[data-section="education"] ul li') or
+                 page.css('#education ~ * ul li') or [])[:6]:
         text = item.get_all_text(strip=True)
         if text and len(text) > 5:
-            text = re.sub(r'\s{3,}', ' · ', text)
-            edu_items.append(f"  - {text}")
+            edu_items.append(f"  - {re.sub(r'\\s{3,}', ' · ', text)}")
 
     if not edu_items:
-        try:
-            raw = page.find_by_text('Education', tag='span') or \
-                  page.find_by_text('Education', tag='h2')
-            if raw:
-                parent = raw.parent.parent if raw.parent else None
-                if parent:
-                    texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
-                    edu_items = [f"  - {t}" for t in texts if t and len(t) > 5][:10]
-        except Exception:
-            pass
+        raw = extract_section(['Education'], max_items=15)
+        edu_items = [f"  - {t}" for t in raw if len(t) > 5][:8]
 
     if edu_items:
         sections.append(f"\nEDUCATION:\n" + "\n".join(edu_items))
 
-    # ── Skills ───────────────────────────────────────────────
+    # Skills
     skill_items = []
-    skill_containers = page.css('section[data-section="skills"] ul li') or \
-                       page.css('#skills ~ * ul li') or \
-                       page.css('.pv-skill-category-entity__name')
-
-    for item in skill_containers[:20]:
+    for item in (page.css('section[data-section="skills"] ul li') or
+                 page.css('#skills ~ * ul li') or [])[:25]:
         text = item.get_all_text(strip=True)
         if text and len(text) > 1:
             skill_items.append(text)
 
     if not skill_items:
-        try:
-            raw = page.find_by_text('Skills', tag='span') or \
-                  page.find_by_text('Skills', tag='h2')
-            if raw:
-                parent = raw.parent.parent if raw.parent else None
-                if parent:
-                    texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
-                    skill_items = [t for t in texts if t and 2 < len(t) < 50][:25]
-        except Exception:
-            pass
+        skill_items = [t for t in extract_section(['Skills'], max_items=30) if 2 < len(t) < 50]
 
     if skill_items:
         sections.append(f"\nSKILLS:\n  " + ", ".join(skill_items))
 
-    # ── Certifications ───────────────────────────────────────
-    cert_items = []
-    try:
-        raw = page.find_by_text('Licenses', tag='span') or \
-              page.find_by_text('Certifications', tag='span') or \
-              page.find_by_text('Licenses & certifications', tag='h2')
-        if raw:
-            parent = raw.parent.parent if raw.parent else None
-            if parent:
-                texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
-                cert_items = [f"  - {t}" for t in texts if t and len(t) > 5][:10]
-    except Exception:
-        pass
+    # Certifications
+    cert = extract_section(['Licenses & certifications', 'Certifications', 'Licenses'], max_items=10)
+    if cert:
+        sections.append(f"\nCERTIFICATIONS:\n" + "\n".join(f"  - {t}" for t in cert if len(t) > 5))
 
-    if cert_items:
-        sections.append(f"\nCERTIFICATIONS:\n" + "\n".join(cert_items))
+    # Languages
+    langs = extract_section(['Languages'], max_items=10)
+    if langs:
+        sections.append(f"\nLANGUAGES:\n  " + ", ".join(t for t in langs if len(t) > 1))
 
-    # ── Languages ────────────────────────────────────────────
-    lang_items = []
-    try:
-        raw = page.find_by_text('Languages', tag='span') or \
-              page.find_by_text('Languages', tag='h2')
-        if raw:
-            parent = raw.parent.parent if raw.parent else None
-            if parent:
-                texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
-                lang_items = [t for t in texts if t and len(t) > 1][:10]
-    except Exception:
-        pass
-
-    if lang_items:
-        sections.append(f"\nLANGUAGES:\n  " + ", ".join(lang_items))
-
-    # ── Volunteer / Projects (bonus) ─────────────────────────
-    for section_name in ['Volunteer experience', 'Projects', 'Publications', 'Honors & awards']:
-        try:
-            raw = page.find_by_text(section_name, tag='span') or \
-                  page.find_by_text(section_name, tag='h2')
-            if raw:
-                parent = raw.parent.parent if raw.parent else None
-                if parent:
-                    texts = [el.get_all_text(strip=True) for el in parent.css('span[aria-hidden="true"]')]
-                    items = [f"  - {t}" for t in texts if t and len(t) > 5][:5]
-                    if items:
-                        sections.append(f"\n{section_name.upper()}:\n" + "\n".join(items))
-        except Exception:
-            pass
+    # Bonus sections
+    for sname in ['Projects', 'Volunteer experience', 'Publications', 'Honors & awards']:
+        items = extract_section([sname], max_items=5)
+        if items:
+            sections.append(f"\n{sname.upper()}:\n" + "\n".join(f"  - {t}" for t in items if len(t) > 5))
 
     result = "\n".join(sections).strip()
 
-    # Final fallback: if we got very little structured data,
-    # return cleaned full-page text so AI can still extract something
+    # Fallback: all aria-hidden spans
     if len(result) < 300:
         try:
-            all_spans = page.css('span[aria-hidden="true"]')
-            texts = [s.get_all_text(strip=True) for s in all_spans if s.get_all_text(strip=True)]
+            texts = [s.get_all_text(strip=True) for s in page.css('span[aria-hidden="true"]')]
             texts = [t for t in texts if len(t) > 3]
             fallback = "\n".join(texts[:150])
             if len(fallback) > len(result):
@@ -233,12 +196,8 @@ def extract_linkedin_profile(page) -> str:
     return result
 
 
-# ──────────────────────────────────────────────────────────────
-# Generic HTML → clean text
-# ──────────────────────────────────────────────────────────────
 def extract_generic_text(page) -> str:
     try:
-        # Try Scrapling's structured extraction first
         body_texts = page.css(
             'body *:not(script):not(style):not(nav):not(footer):not(header)::text'
         ).getall()
@@ -248,26 +207,20 @@ def extract_generic_text(page) -> str:
     except Exception:
         pass
 
-    # Fallback: strip HTML tags from raw HTML
     html = getattr(page, 'html', '') or ''
     html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
     html = re.sub(r'<style[^>]*>.*?</style>', '', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<nav[^>]*>.*?</nav>', '', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<footer[^>]*>.*?</footer>', '', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<header[^>]*>.*?</header>', '', html, flags=re.DOTALL | re.IGNORECASE)
     html = re.sub(r'<[^>]+>', ' ', html)
-    html = html.replace('&nbsp;', ' ').replace('&amp;', '&') \
-               .replace('&lt;', '<').replace('&gt;', '>') \
-               .replace('&quot;', '"').replace('&#39;', "'")
+    html = html.replace('&nbsp;', ' ').replace('&amp;', '&').replace('&quot;', '"')
     return re.sub(r'\s+', ' ', html).strip()
 
 
-# ──────────────────────────────────────────────────────────────
-# Core scrape function
-# ──────────────────────────────────────────────────────────────
 def scrape_url(url: str) -> dict:
     if not SCRAPLING_AVAILABLE:
-        return {'error': 'Scrapling not installed on this server.', 'success': False}
+        return {'error': 'Scrapling not installed.', 'success': False}
+
+    if not _browsers_ready:
+        return {'error': 'Browser not available. Please try again in a moment or upload the file directly.', 'success': False}
 
     try:
         if needs_stealth(url):
@@ -281,69 +234,53 @@ def scrape_url(url: str) -> dict:
         else:
             page = Fetcher.get(url, stealthy_headers=True, follow_redirects=True)
 
-        # Check if we got blocked / redirected to login
         current_url = getattr(page, 'url', url) or url
         status = getattr(page, 'status', 200) or 200
 
         if status in (401, 403, 999):
-            return {
-                'error': f'Access denied (HTTP {status}). The page requires login or blocks automated access.',
-                'success': False,
-            }
+            return {'error': f'Access denied (HTTP {status}). Page requires login.', 'success': False}
 
-        # LinkedIn login wall detection
-        if is_linkedin(url) and ('authwall' in current_url or 'login' in current_url or 'signup' in current_url):
+        if is_linkedin(url) and any(x in current_url for x in ('authwall', '/login', '/signup', 'checkpoint')):
             return {
                 'error': (
-                    'LinkedIn redirected to login wall. '
-                    'The profile is private or requires authentication. '
-                    'Please use LinkedIn → More → Save to PDF and upload the file directly.'
+                    'LinkedIn redirected to login. The profile requires authentication. '
+                    'Please use: LinkedIn → More → Save to PDF → upload here.'
                 ),
                 'success': False,
             }
 
-        # Extract structured data
-        if is_linkedin(url):
-            text = extract_linkedin_profile(page)
-            profile_type = 'linkedin'
-        else:
-            text = extract_generic_text(page)
-            profile_type = 'generic'
+        text = extract_linkedin_profile(page) if is_linkedin(url) else extract_generic_text(page)
+        profile_type = 'linkedin' if is_linkedin(url) else 'generic'
 
         if not text or len(text) < 150:
             return {
-                'error': (
-                    'Not enough profile data could be extracted. '
-                    'The page may require login or render content dynamically after authentication. '
-                    'Please download/export your profile as PDF and upload it directly.'
-                ),
+                'error': 'Not enough data extracted. The page may require login. Please upload your CV as a file.',
                 'success': False,
             }
 
-        return {
-            'text': text[:15000],   # generous limit — profiles can be long
-            'profile_type': profile_type,
-            'success': True,
-        }
+        return {'text': text[:15000], 'profile_type': profile_type, 'success': True}
 
     except Exception as e:
         err = str(e)
+        if 'Executable doesn' in err or 'playwright install' in err or 'ms-playwright' in err:
+            # Browser binary missing at runtime — try to install now and advise retry
+            ensure_browsers_installed()
+            return {
+                'error': 'Browser was not ready. It has been queued for installation — please try again in 30 seconds, or upload your CV file directly.',
+                'success': False,
+            }
         if 'net::ERR' in err or 'TimeoutError' in err or 'timeout' in err.lower():
-            return {'error': 'Page load timed out or network error. Please try again or upload the file directly.', 'success': False}
+            return {'error': 'Page load timed out. Please try again or upload the file directly.', 'success': False}
         if '403' in err or 'blocked' in err.lower() or '999' in err:
-            return {'error': 'The website blocked access. Please upload your CV file directly.', 'success': False}
+            return {'error': 'Website blocked access. Please upload your CV file directly.', 'success': False}
         return {'error': f'Scraping error: {err}', 'success': False}
 
 
-# ──────────────────────────────────────────────────────────────
-# Stdlib fallback (when Scrapling not installed)
-# ──────────────────────────────────────────────────────────────
 def scrape_url_fallback(url: str) -> dict:
     try:
         req = urllib.request.Request(url, headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept': 'text/html,*/*;q=0.8',
         })
         with urllib.request.urlopen(req, timeout=15) as response:
             html = response.read().decode('utf-8', errors='ignore')
@@ -351,18 +288,15 @@ def scrape_url_fallback(url: str) -> dict:
         html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
         html = re.sub(r'<style[^>]*>.*?</style>', '', html, flags=re.DOTALL | re.IGNORECASE)
         html = re.sub(r'<[^>]+>', ' ', html)
-        html = re.sub(r'&\w+;', ' ', html)
         text = re.sub(r'\s+', ' ', html).strip()
 
         if len(text) < 200:
             return {'error': 'Not enough text extracted. Please upload the file directly.', 'success': False}
-
         return {'text': text[:12000], 'profile_type': 'generic', 'success': True}
-
     except HTTPError as e:
-        return {'error': f'HTTP {e.code}: {e.reason}. Please upload the file directly.', 'success': False}
+        return {'error': f'HTTP {e.code}: {e.reason}', 'success': False}
     except Exception as e:
-        return {'error': f'Failed to fetch URL: {str(e)}', 'success': False}
+        return {'error': f'Failed: {str(e)}', 'success': False}
 
 
 # ──────────────────────────────────────────────────────────────
@@ -371,7 +305,7 @@ def scrape_url_fallback(url: str) -> dict:
 class handler(BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
-        pass  # suppress noisy Vercel logs
+        pass
 
     def _json(self, status: int, data: dict):
         body = json.dumps(data).encode('utf-8')
@@ -391,9 +325,9 @@ class handler(BaseHTTPRequestHandler):
         self._json(200, {
             'status': 'ok',
             'service': 'wazivo-scrapling',
-            'version': '3.0',
+            'version': '3.1',
             'scrapling_available': SCRAPLING_AVAILABLE,
-            'features': ['linkedin_structured', 'stealth_fetch', 'direct_file_parse'],
+            'browsers_ready': _browsers_ready,
         })
 
     def do_POST(self):
@@ -411,23 +345,15 @@ class handler(BaseHTTPRequestHandler):
                 self._json(400, {'error': 'URL is required', 'success': False})
                 return
 
-            # Route to appropriate scraper
             if SCRAPLING_AVAILABLE:
                 result = scrape_url(url)
             else:
                 if needs_stealth(url):
-                    result = {
-                        'error': (
-                            'Scrapling is not installed. Bot-protected sites like LinkedIn '
-                            'cannot be fetched. Please upload your CV file directly.'
-                        ),
-                        'success': False,
-                    }
+                    result = {'error': 'Scrapling not installed. Please upload your CV file directly.', 'success': False}
                 else:
                     result = scrape_url_fallback(url)
 
-            status_code = 200 if result.get('success') else 400
-            self._json(status_code, result)
+            self._json(200 if result.get('success') else 400, result)
 
         except json.JSONDecodeError:
             self._json(400, {'error': 'Invalid JSON', 'success': False})
