@@ -60,15 +60,15 @@ export async function fetchCVFromURL(url: string): Promise<string> {
 
   // Use Scrapling service for web pages, protected sites, or if direct fetch failed
   try {
-    const response = await fetch('/api/scrapling/extract-cv', {
+    const response = await fetch('/api/scrapling', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, mode: 'auto' }),
+      body: JSON.stringify({ url }),
     });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || `Scrapling service error: ${response.status}`);
+      throw new Error(error.error || `Scrapling service error: ${response.status}`);
     }
 
     const data = await response.json();
