@@ -1,13 +1,3 @@
-# These are supported funding model platforms
+# GitHub Sponsors only
 
 github: [SamoTech]
-patreon: # your_patreon_username
-open_collective: # your_open_collective
-ko_fi: # your_kofi_username
-tidelift: # npm/package-name
-community_bridge: # project-name
-liberapay: # your_liberapay_username
-issuehunt: # your_issuehunt_username
-otechie: # your_otechie_username
-lfx_crowdfunding: # project-name
-custom: ['https://www.buymeacoffee.com/samotech', 'https://paypal.me/samotech']
