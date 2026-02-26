@@ -1,7 +1,7 @@
 {
-  "name": "ai-resume-analyzer",
+  "name": "wazivo",
   "version": "1.0.0",
-  "description": "AI-powered resume analysis and career intelligence tool",
+  "description": "Get Hired, Get Wazivo - AI-Powered Resume Analyzer",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
