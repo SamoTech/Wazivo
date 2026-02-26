@@ -1,0 +1,6 @@
+[project]
+name = "wazivo-scrapling"
+version = "1.0.0"
+description = "Web scraping service for Wazivo"
+requires-python = ">=3.9"
+dependencies = []
