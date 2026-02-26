@@ -1,6 +1,14 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs"
+  "functions": {
+    "api/*.py": {
+      "runtime": "python3.12"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/scrapling/(.*)",
+      "dest": "/api/main.py"
+    }
+  ],
+  "buildCommand": "npm ci && cd api && pip install -r requirements.txt && playwright install chromium"
 }
