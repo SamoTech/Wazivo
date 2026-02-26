@@ -12,7 +12,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=for-the-badge&logo=openai)](https://openai.com/)
+[![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3-F55036?style=for-the-badge&logo=meta)](https://groq.com/)
 
 [![Vercel Deploy](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com)
 [![Code Size](https://img.shields.io/github/languages/code-size/SamoTech/Wazivo?style=for-the-badge&logo=github)](https://github.com/SamoTech/Wazivo)
@@ -31,7 +31,7 @@
 
 **Wazivo** (وظيفو) is your intelligent career companion. Upload your CV, get AI-powered insights, discover matching jobs, identify skill gaps, and receive personalized course recommendations.
 
-> 🌟 Built with Next.js 14, TypeScript, and OpenAI GPT for maximum performance and intelligence.
+> 🌟 Built with Next.js 14, TypeScript, and Groq's lightning-fast AI inference for maximum performance.
 
 ## ✨ Key Features
 
@@ -49,9 +49,9 @@
 <td>
 
 ### 🤖 AI-Powered Analysis
-- OpenAI GPT-4 integration
+- Groq + LLaMA 3.3 70B
+- Lightning-fast inference
 - Skill extraction
-- Experience analysis
 - Gap identification
 
 </td>
@@ -93,8 +93,9 @@ npm install
 # Create environment file
 cp .env.example .env
 
-# Add your OpenAI API key to .env
-# OPENAI_API_KEY=sk-your-key-here
+# Add your Groq API key to .env
+# GROQ_API_KEY=gsk-your-key-here
+# Get free API key: https://console.groq.com
 
 # Run development server
 npm run dev
@@ -106,11 +107,16 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 
 | Variable | Required | Description | Get It From |
 |----------|----------|-------------|-------------|
-| `OPENAI_API_KEY` | ✅ Yes | OpenAI API key for AI analysis | [OpenAI Platform](https://platform.openai.com) |
-| `OPENAI_MODEL` | ❌ Optional | Model to use (default: gpt-3.5-turbo) | - |
+| `GROQ_API_KEY` | ✅ Yes | Groq API key for lightning-fast AI inference | [Groq Console](https://console.groq.com) |
+| `GROQ_MODEL` | ❌ Optional | Model to use (default: llama-3.3-70b-versatile) | - |
 | `ADZUNA_APP_ID` | ❌ Optional | Adzuna job search API | [Adzuna Developer](https://developer.adzuna.com) |
 | `ADZUNA_APP_KEY` | ❌ Optional | Adzuna API key | [Adzuna Developer](https://developer.adzuna.com) |
 | `RAPIDAPI_KEY` | ❌ Optional | RapidAPI key for JSearch | [RapidAPI](https://rapidapi.com) |
+
+### Available Groq Models:
+- `llama-3.3-70b-versatile` (Default - Best quality)
+- `mixtral-8x7b-32768` (Fast with long context)
+- `gemma2-9b-it` (Lightweight & fast)
 
 ## 📦 Tech Stack
 
@@ -121,7 +127,7 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 | **Framework** | Next.js 14 (App Router) |
 | **Language** | TypeScript 5.3 |
 | **Styling** | Tailwind CSS 3.4 |
-| **AI/ML** | OpenAI GPT-4 |
+| **AI/ML** | Groq (LLaMA 3.3 70B) |
 | **Parsing** | pdf-parse, mammoth, tesseract.js |
 | **Job Search** | Adzuna, JSearch, Custom scraping |
 | **Icons** | Lucide React |
@@ -144,7 +150,7 @@ wazivo/
 │       │   └── 📝 AnalysisResults.tsx # Results display
 │       ├── 📂 lib/
 │       │   ├── 📝 cvParser.ts        # CV parsing logic
-│       │   ├── 📝 openaiService.ts   # AI analysis
+│       │   ├── 📝 openaiService.ts   # AI analysis (Groq)
 │       │   ├── 📝 jobSearchService.ts # Job search
 │       │   └── 📝 utils.ts           # Utilities
 │       ├── 📂 types/
@@ -166,7 +172,8 @@ wazivo/
 
 1. Click the button above
 2. Import your GitHub repository
-3. Add environment variables
+3. Add environment variables:
+   - `GROQ_API_KEY` (get from [console.groq.com](https://console.groq.com))
 4. Deploy! 🎉
 
 Your app will be live at: `https://wazivo.vercel.app`
@@ -188,10 +195,12 @@ Your app will be live at: `https://wazivo.vercel.app`
 
 | Service | Cost | Notes |
 |---------|------|-------|
-| **OpenAI API** | ~$0.002 per CV | GPT-3.5-turbo |
+| **Groq API** | **FREE** | Free tier: 14,400 requests/day |
 | **Job APIs** | Free | Adzuna & JSearch free tiers |
 | **Hosting** | Free | Vercel/Netlify free tier |
-| **Monthly Total** | $5-20 | Depends on usage |
+| **Monthly Total** | **$0** | 🎉 Completely free! |
+
+> ⚡ **Why Groq?** Lightning-fast inference (10-100x faster than OpenAI), generous free tier, and same quality results!
 
 ## 🎨 Branding
 
@@ -215,7 +224,7 @@ Your app will be live at: `https://wazivo.vercel.app`
 ```mermaid
 graph LR
     A[📄 Upload CV] --> B[🔍 Parse Content]
-    B --> C[🤖 AI Analysis]
+    B --> C[🤖 Groq AI Analysis]
     C --> D[💼 Job Search]
     C --> E[🎯 Identify Gaps]
     E --> F[📚 Course Recommendations]
@@ -293,6 +302,6 @@ If you find Wazivo helpful:
 
 **[Start Analyzing Your CV Now →](https://wazivo.vercel.app)**
 
-*Sponsorship Policy: GitHub Sponsors only 💖*
+*Powered by Groq's lightning-fast AI ⚡ | Sponsorship Policy: GitHub Sponsors only 💖*
 
 </div>
