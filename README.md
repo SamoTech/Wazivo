@@ -248,26 +248,40 @@ If you find Wazivo helpful:
 - 🐛 [Report bugs](https://github.com/SamoTech/Wazivo/issues)
 - 💡 [Suggest features](https://github.com/SamoTech/Wazivo/issues)
 - 📢 Share with friends
-- ☕ [Buy me a coffee](https://github.com/sponsors/SamoTech)
+- 💖 [Sponsor on GitHub](https://github.com/sponsors/SamoTech)
 
-## 🔗 Links
+## 🔗 Connect & Support
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-SamoTech%2FWazivo-181717?style=for-the-badge&logo=github)](https://github.com/SamoTech/Wazivo)
+### 🌐 Find Us Online
+
+[![GitHub](https://img.shields.io/badge/GitHub-SamoTech-181717?style=for-the-badge&logo=github)](https://github.com/SamoTech)
+[![Twitter](https://img.shields.io/badge/Twitter-@OssamaHashim-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/OssamaHashim)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Ossama_Hashim-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/ossamahashim/)
+[![Facebook](https://img.shields.io/badge/Facebook-Ossama_Hashim-1877F2?style=for-the-badge&logo=facebook)](https://www.facebook.com/ossama.hashim)
+
+### 💼 Project Links
+
 [![Website](https://img.shields.io/badge/Website-wazivo.vercel.app-0066FF?style=for-the-badge&logo=vercel)](https://wazivo.vercel.app)
 [![Documentation](https://img.shields.io/badge/Docs-Read%20More-blue?style=for-the-badge&logo=readthedocs)](https://github.com/SamoTech/Wazivo/wiki)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/SamoTech)
+
+### 👍 Follow & Support
+
+[![GitHub followers](https://img.shields.io/github/followers/SamoTech?style=social)](https://github.com/SamoTech)
+[![Twitter Follow](https://img.shields.io/twitter/follow/OssamaHashim?style=social)](https://twitter.com/OssamaHashim)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/SamoTech?style=social)](https://github.com/sponsors/SamoTech)
 
 </div>
 
-## 👥 Team
+## 👥 About the Developer
 
 <div align="center">
 
-**Built with ❤️ by [SamoTech](https://github.com/SamoTech)**
+**Built with ❤️ by [Ossama Hashim](https://github.com/SamoTech)**
 
-[![GitHub followers](https://img.shields.io/github/followers/SamoTech?style=social)](https://github.com/SamoTech)
-[![Twitter Follow](https://img.shields.io/twitter/follow/SamoTech?style=social)](https://twitter.com/SamoTech)
+*Full-stack developer passionate about AI, automation, and career tech*
 
 </div>
 
@@ -278,5 +292,7 @@ If you find Wazivo helpful:
 ### Get Hired, Get Wazivo 💼
 
 **[Start Analyzing Your CV Now →](https://wazivo.vercel.app)**
+
+*Sponsorship Policy: GitHub Sponsors only 💖*
 
 </div>
