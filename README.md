@@ -1,23 +1,92 @@
+<div align="center">
+
 # 💼 Wazivo - Get Hired, Get Wazivo
 
-AI-powered resume analyzer that helps you land your dream job. Built with Next.js 14, TypeScript, and OpenAI GPT.
+**AI-powered resume analyzer that helps you land your dream job**
+
+[![GitHub Stars](https://img.shields.io/github/stars/SamoTech/Wazivo?style=for-the-badge&logo=github&color=yellow)](https://github.com/SamoTech/Wazivo/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/SamoTech/Wazivo?style=for-the-badge&logo=github&color=blue)](https://github.com/SamoTech/Wazivo/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/SamoTech/Wazivo?style=for-the-badge&logo=github&color=red)](https://github.com/SamoTech/Wazivo/issues)
+[![GitHub License](https://img.shields.io/github/license/SamoTech/Wazivo?style=for-the-badge&color=green)](https://github.com/SamoTech/Wazivo/blob/main/LICENSE)
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=for-the-badge&logo=openai)](https://openai.com/)
+
+[![Vercel Deploy](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com)
+[![Code Size](https://img.shields.io/github/languages/code-size/SamoTech/Wazivo?style=for-the-badge&logo=github)](https://github.com/SamoTech/Wazivo)
+[![Last Commit](https://img.shields.io/github/last-commit/SamoTech/Wazivo?style=for-the-badge&logo=github)](https://github.com/SamoTech/Wazivo/commits/main)
+
+![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=SamoTech.Wazivo&left_color=%230066FF&right_color=%23FF6B35)
+[![Profile Views](https://komarev.com/ghpvc/?username=SamoTech&repo=Wazivo&color=0066FF&style=for-the-badge&label=REPO+VIEWS)](https://github.com/SamoTech/Wazivo)
+
+[**🚀 Live Demo**](https://wazivo.vercel.app) | [**📚 Documentation**](https://github.com/SamoTech/Wazivo/wiki) | [**🐛 Report Bug**](https://github.com/SamoTech/Wazivo/issues) | [**💡 Request Feature**](https://github.com/SamoTech/Wazivo/issues)
+
+</div>
+
+---
 
 ## 🎯 What is Wazivo?
 
 **Wazivo** (وظيفو) is your intelligent career companion. Upload your CV, get AI-powered insights, discover matching jobs, identify skill gaps, and receive personalized course recommendations.
 
+> 🌟 Built with Next.js 14, TypeScript, and OpenAI GPT for maximum performance and intelligence.
+
 ## ✨ Key Features
 
-- 📄 **Multi-format CV parsing** - PDF, DOCX, images (with OCR)
-- 🤖 **AI-powered analysis** - Deep insights using OpenAI GPT
-- 💼 **Real-time job search** - Finds opportunities across 10+ platforms
-- 🎯 **Skill gap identification** - Know exactly what to improve
-- 📚 **Course recommendations** - Personalized learning paths
-- 🌐 **Beautiful UI** - Responsive, modern design
+<table>
+<tr>
+<td>
+
+### 📄 Smart CV Parsing
+- PDF, DOCX, DOC support
+- Image OCR with Tesseract
+- URL fetching
+- Multi-language support
+
+</td>
+<td>
+
+### 🤖 AI-Powered Analysis
+- OpenAI GPT-4 integration
+- Skill extraction
+- Experience analysis
+- Gap identification
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 💼 Real-Time Job Search
+- 10+ job platforms
+- Smart matching algorithm
+- Location-based results
+- Remote job filtering
+
+</td>
+<td>
+
+### 📚 Course Recommendations
+- Personalized learning paths
+- Udemy, Coursera, edX
+- Skill-gap aligned
+- Free & paid options
+
+</td>
+</tr>
+</table>
 
 ## 🚀 Quick Start
 
 ```bash
+# Clone the repository
+git clone https://github.com/SamoTech/Wazivo.git
+
+# Navigate to project directory
+cd Wazivo
+
 # Install dependencies
 npm install
 
@@ -31,113 +100,183 @@ cp .env.example .env
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) 🎉
 
 ## 🔑 Environment Variables
 
-**Required:**
-- `OPENAI_API_KEY` - Get from https://platform.openai.com
-- `OPENAI_MODEL` - Default: gpt-3.5-turbo
-
-**Optional (for better job results):**
-- `ADZUNA_APP_ID` & `ADZUNA_APP_KEY` - From https://developer.adzuna.com
-- `RAPIDAPI_KEY` - From https://rapidapi.com
+| Variable | Required | Description | Get It From |
+|----------|----------|-------------|-------------|
+| `OPENAI_API_KEY` | ✅ Yes | OpenAI API key for AI analysis | [OpenAI Platform](https://platform.openai.com) |
+| `OPENAI_MODEL` | ❌ Optional | Model to use (default: gpt-3.5-turbo) | - |
+| `ADZUNA_APP_ID` | ❌ Optional | Adzuna job search API | [Adzuna Developer](https://developer.adzuna.com) |
+| `ADZUNA_APP_KEY` | ❌ Optional | Adzuna API key | [Adzuna Developer](https://developer.adzuna.com) |
+| `RAPIDAPI_KEY` | ❌ Optional | RapidAPI key for JSearch | [RapidAPI](https://rapidapi.com) |
 
 ## 📦 Tech Stack
 
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **AI:** OpenAI API
-- **Parsing:** pdf-parse, mammoth, tesseract.js
-- **Job Search:** Multiple APIs + web scraping
-- **Icons:** Lucide React
+<div align="center">
+
+| Category | Technology |
+|----------|------------|
+| **Framework** | Next.js 14 (App Router) |
+| **Language** | TypeScript 5.3 |
+| **Styling** | Tailwind CSS 3.4 |
+| **AI/ML** | OpenAI GPT-4 |
+| **Parsing** | pdf-parse, mammoth, tesseract.js |
+| **Job Search** | Adzuna, JSearch, Custom scraping |
+| **Icons** | Lucide React |
+| **Deployment** | Vercel |
+
+</div>
 
 ## 🏗️ Project Structure
 
 ```
 wazivo/
-├── src/
-│   └── app/
-│       ├── api/analyze/         # API endpoint
-│       ├── components/          # React components
-│       ├── lib/                 # Business logic
-│       ├── types/               # TypeScript types
-│       └── page.tsx             # Main page
-├── package.json
-└── next.config.js
+├── 📂 src/
+│   └── 📂 app/
+│       ├── 📂 api/
+│       │   └── 📂 analyze/
+│       │       └── 📝 route.ts          # API endpoint
+│       ├── 📂 components/
+│       │   ├── 📝 FileUpload.tsx     # CV upload component
+│       │   ├── 📝 LoadingState.tsx   # Loading UI
+│       │   └── 📝 AnalysisResults.tsx # Results display
+│       ├── 📂 lib/
+│       │   ├── 📝 cvParser.ts        # CV parsing logic
+│       │   ├── 📝 openaiService.ts   # AI analysis
+│       │   ├── 📝 jobSearchService.ts # Job search
+│       │   └── 📝 utils.ts           # Utilities
+│       ├── 📂 types/
+│       │   └── 📝 index.ts           # TypeScript types
+│       ├── 🎨 globals.css          # Global styles
+│       ├── 📝 layout.tsx           # Root layout
+│       └── 📝 page.tsx             # Main page
+├── 📦 package.json
+├── ⚙️ next.config.js
+├── ⚙️ tailwind.config.ts
+└── ⚙️ tsconfig.json
 ```
 
 ## 🚢 Deployment
 
-### Vercel (Recommended)
+### Deploy to Vercel (Recommended)
 
-1. Push to GitHub
-2. Import project on [Vercel](https://vercel.com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SamoTech/Wazivo)
+
+1. Click the button above
+2. Import your GitHub repository
 3. Add environment variables
-4. Deploy!
+4. Deploy! 🎉
 
 Your app will be live at: `https://wazivo.vercel.app`
 
 ### Other Platforms
 
-Works on any platform supporting Next.js:
-- Netlify
-- Railway
-- Render
-- AWS Amplify
+<div align="center">
+
+| Platform | Status | Guide |
+|----------|--------|-------|
+| **Vercel** | ✅ Tested | [Deploy Guide](https://vercel.com/docs) |
+| **Netlify** | ✅ Compatible | [Deploy Guide](https://docs.netlify.com) |
+| **Railway** | ✅ Compatible | [Deploy Guide](https://docs.railway.app) |
+| **AWS Amplify** | ✅ Compatible | [Deploy Guide](https://docs.amplify.aws) |
+
+</div>
 
 ## 💰 Cost Estimate
 
-- **OpenAI API:** ~$0.002 per CV analysis
-- **Job APIs:** Free tiers available
-- **Hosting:** Free on Vercel/Netlify
-
-**Monthly estimate:** $5-20 depending on usage
+| Service | Cost | Notes |
+|---------|------|-------|
+| **OpenAI API** | ~$0.002 per CV | GPT-3.5-turbo |
+| **Job APIs** | Free | Adzuna & JSearch free tiers |
+| **Hosting** | Free | Vercel/Netlify free tier |
+| **Monthly Total** | $5-20 | Depends on usage |
 
 ## 🎨 Branding
 
-**Name:** Wazivo (وظيفو)  
-**Meaning:** From "وظيفة" (Job) + modern tech ending  
-**Tagline:** "Get Hired, Get Wazivo"  
-**Colors:** Blue (#0066FF) + Orange (#FF6B35)  
+<div align="center">
+
+| Element | Value |
+|---------|-------|
+| **Name** | Wazivo (وظيفو) |
+| **Meaning** | From "وظيفة" (Job) + modern tech ending |
+| **Tagline** | "Get Hired, Get Wazivo" |
+| **Primary Color** | Blue (#0066FF) |
+| **Secondary Color** | Orange (#FF6B35) |
+| **Icon** | 💼 Briefcase |
+
+</div>
+
+> 📚 See [BRANDING.md](https://github.com/SamoTech/Wazivo/blob/main/BRANDING.md) for complete brand guidelines
 
 ## 📖 How It Works
 
-1. **Upload CV** - User uploads PDF/DOCX or provides URL
-2. **Parse Content** - Extract text using specialized parsers
-3. **AI Analysis** - OpenAI analyzes skills, experience, gaps
-4. **Job Search** - Search across multiple platforms
-5. **Generate Report** - Display jobs, gaps, and courses
-6. **Take Action** - Apply to jobs, enroll in courses
+```mermaid
+graph LR
+    A[📄 Upload CV] --> B[🔍 Parse Content]
+    B --> C[🤖 AI Analysis]
+    C --> D[💼 Job Search]
+    C --> E[🎯 Identify Gaps]
+    E --> F[📚 Course Recommendations]
+    D --> G[📊 Generate Report]
+    F --> G
+    G --> H[✅ Take Action]
+```
 
 ## 🤝 Contributing
 
+We love contributions! 💙
+
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m '✨ Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+See [CONTRIBUTING.md](https://github.com/SamoTech/Wazivo/blob/main/CONTRIBUTING.md) for detailed guidelines.
 
 ## 📝 License
 
-MIT License - feel free to use for personal or commercial projects
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/SamoTech/Wazivo/blob/main/LICENSE) file for details.
 
-## 🌟 Support
+## 🌟 Support the Project
 
-If you find Wazivo helpful, please:
+If you find Wazivo helpful:
+
 - ⭐ Star the repo
-- 🐛 Report bugs
-- 💡 Suggest features
+- 🐛 [Report bugs](https://github.com/SamoTech/Wazivo/issues)
+- 💡 [Suggest features](https://github.com/SamoTech/Wazivo/issues)
 - 📢 Share with friends
+- ☕ [Buy me a coffee](https://github.com/sponsors/SamoTech)
 
 ## 🔗 Links
 
-- **GitHub:** https://github.com/SamoTech/Wazivo
-- **Docs:** See INSTALLATION.md
+<div align="center">
+
+[![GitHub](https://img.shields.io/badge/GitHub-SamoTech%2FWazivo-181717?style=for-the-badge&logo=github)](https://github.com/SamoTech/Wazivo)
+[![Website](https://img.shields.io/badge/Website-wazivo.vercel.app-0066FF?style=for-the-badge&logo=vercel)](https://wazivo.vercel.app)
+[![Documentation](https://img.shields.io/badge/Docs-Read%20More-blue?style=for-the-badge&logo=readthedocs)](https://github.com/SamoTech/Wazivo/wiki)
+
+</div>
+
+## 👥 Team
+
+<div align="center">
+
+**Built with ❤️ by [SamoTech](https://github.com/SamoTech)**
+
+[![GitHub followers](https://img.shields.io/github/followers/SamoTech?style=social)](https://github.com/SamoTech)
+[![Twitter Follow](https://img.shields.io/twitter/follow/SamoTech?style=social)](https://twitter.com/SamoTech)
+
+</div>
 
 ---
 
-**Built with ❤️ by SamoTech**
+<div align="center">
 
-Get Hired, Get Wazivo 💼
+### Get Hired, Get Wazivo 💼
+
+**[Start Analyzing Your CV Now →](https://wazivo.vercel.app)**
+
+</div>
