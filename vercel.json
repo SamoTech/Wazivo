@@ -4,5 +4,12 @@
       "source": "/api/scrapling",
       "destination": "/api/index.py"
     }
-  ]
+  ],
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.12",
+      "maxDuration": 60
+    }
+  },
+  "buildCommand": "npm run build && pip install scrapling[fetchers] && scrapling install"
 }
