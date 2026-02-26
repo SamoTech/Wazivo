@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const type = formData.get('type') as string;
     let cvText: string;
 
-    // Step 1: Parse CV
+    // ── Step 1: Parse CV ──────────────────────────────────────
     try {
       if (type === 'file') {
         const file = formData.get('file') as File;
@@ -25,54 +25,80 @@ export async function POST(request: NextRequest) {
         cvText = await fetchCVFromURL(url);
       }
     } catch (parseError: any) {
-      console.error('CV parsing error:', parseError);
-      return NextResponse.json({ 
-        error: `Failed to parse CV: ${parseError.message}` 
-      }, { status: 400 });
+      return NextResponse.json({ error: `Failed to parse CV: ${parseError.message}` }, { status: 400 });
     }
 
     if (cvText.length < 100) {
-      return NextResponse.json({ 
-        error: 'Insufficient text extracted from CV. Please ensure the file is readable.' 
+      return NextResponse.json({
+        error: 'Insufficient text extracted from CV. Please ensure the file is readable.',
       }, { status: 400 });
     }
 
-    // Step 2: AI Analysis (most important)
-    let analysis;
+    // ── Step 2: AI Analysis ───────────────────────────────────
+    let analysis: any;
     try {
       analysis = await analyzeResume(cvText);
     } catch (aiError: any) {
-      console.error('AI analysis error:', aiError);
-      return NextResponse.json({ 
-        error: `AI analysis failed: ${aiError.message}. Please check your GROQ_API_KEY.` 
+      return NextResponse.json({
+        error: `AI analysis failed: ${aiError.message}. Please check your GROQ_API_KEY.`,
       }, { status: 500 });
     }
 
-    // Step 3: Job Matching (optional - don't fail if this errors)
+    // ── Step 3: Job Search ────────────────────────────────────
     try {
-      const { enhancedSkills } = await enhanceJobMatching(
-        cvText, 
-        analysis.candidateSummary.keySkills, 
-        analysis.candidateSummary.title
+      const jobSearch = analysis.jobSearch;  // AI-generated search block
+      const summary   = analysis.candidateSummary;
+
+      const { searchQuery, alternativeQueries, enhancedSkills } = await enhanceJobMatching(
+        cvText,
+        summary?.keySkills || [],
+        summary?.title,
+        jobSearch,
       );
-      const jobs = await searchJobs(
-        enhancedSkills, 
-        analysis.candidateSummary.title, 
-        analysis.candidateSummary.location
+
+      // Search with primary query + top alternative
+      const queriesToSearch = [searchQuery, ...(alternativeQueries || []).slice(0, 1)];
+      const location = summary?.location || '';
+
+      const jobResults = await Promise.allSettled(
+        queriesToSearch.map(q => searchJobs(enhancedSkills, q, location))
       );
-      analysis.jobOpportunities = jobs;
+
+      // Merge and deduplicate results
+      const allJobs: any[] = [];
+      const seen = new Set<string>();
+      for (const result of jobResults) {
+        if (result.status === 'fulfilled') {
+          for (const job of result.value) {
+            const key = `${job.title}|${job.company}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              allJobs.push(job);
+            }
+          }
+        }
+      }
+
+      analysis.jobOpportunities = allJobs;
+
+      // Expose search metadata for debugging / display
+      analysis.jobSearchMeta = {
+        primaryQuery: searchQuery,
+        alternativeQueries,
+        location,
+      };
+
     } catch (jobError: any) {
       console.error('Job search error:', jobError);
-      // Don't fail - just provide empty jobs or fallback
       analysis.jobOpportunities = [];
     }
 
     return NextResponse.json(analysis);
-    
+
   } catch (error: any) {
     console.error('Unexpected error:', error);
-    return NextResponse.json({ 
-      error: error.message || 'Analysis failed unexpectedly. Please try again.' 
+    return NextResponse.json({
+      error: error.message || 'Analysis failed unexpectedly. Please try again.',
     }, { status: 500 });
   }
 }
