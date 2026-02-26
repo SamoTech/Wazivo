@@ -5,5 +5,5 @@
       "destination": "/api/index.py"
     }
   ],
-  "buildCommand": "npm run build && pip install scrapling[fetchers] && scrapling install"
+  "buildCommand": "npm run build && pip install scrapling[fetchers] --break-system-packages && scrapling install"
 }
