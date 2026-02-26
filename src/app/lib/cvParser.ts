@@ -2,7 +2,6 @@ import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
 import Tesseract from 'tesseract.js';
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 
 export async function parseCV(file: Buffer, mimeType: string): Promise<string> {
   if (mimeType === 'application/pdf') {
@@ -24,13 +23,38 @@ export async function fetchCVFromURL(url: string): Promise<string> {
     timeout: 10000,
     responseType: 'arraybuffer',
   });
+  
   const contentType = response.headers['content-type'] || '';
+  
   if (contentType.includes('pdf')) {
     return await parseCV(Buffer.from(response.data), 'application/pdf');
   } else if (contentType.includes('html')) {
-    const $ = cheerio.load(response.data.toString());
-    $('script, style, nav, footer').remove();
-    return $('body').text().replace(/\s+/g, ' ').trim();
+    // Simple HTML to text conversion without cheerio
+    let html = response.data.toString();
+    
+    // Remove script and style tags
+    html = html.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
+    html = html.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
+    html = html.replace(/<nav[^>]*>([\s\S]*?)<\/nav>/gi, '');
+    html = html.replace(/<footer[^>]*>([\s\S]*?)<\/footer>/gi, '');
+    html = html.replace(/<header[^>]*>([\s\S]*?)<\/header>/gi, '');
+    
+    // Remove all HTML tags
+    html = html.replace(/<[^>]+>/g, ' ');
+    
+    // Decode HTML entities
+    html = html.replace(/&nbsp;/g, ' ');
+    html = html.replace(/&amp;/g, '&');
+    html = html.replace(/&lt;/g, '<');
+    html = html.replace(/&gt;/g, '>');
+    html = html.replace(/&quot;/g, '"');
+    html = html.replace(/&#39;/g, "'");
+    
+    // Normalize whitespace
+    html = html.replace(/\s+/g, ' ').trim();
+    
+    return html;
   }
+  
   return response.data.toString();
 }
