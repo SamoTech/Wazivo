@@ -2,35 +2,44 @@ import axios from 'axios';
 import { JobListing } from '../types';
 
 const MAX_JOBS = 10;
-const TIMEOUT = 5000;
+const TIMEOUT = 3000; // Reduced timeout
 
 export async function searchJobs(skills: string[], title?: string, location?: string): Promise<JobListing[]> {
   const query = title || skills.slice(0, 3).join(' ');
-  
-  // Run searches in parallel with error handling
-  const results = await Promise.allSettled([
-    searchAdzuna(query, location || 'remote'),
-    searchJSearch(query, location || 'remote'),
-  ]);
-
   const jobs: JobListing[] = [];
-  results.forEach(r => { 
-    if (r.status === 'fulfilled') {
-      jobs.push(...r.value); 
-    }
-  });
+  
+  // Try to get real jobs from APIs, but don't let failures block the app
+  try {
+    const results = await Promise.allSettled([
+      searchAdzuna(query, location || 'remote'),
+      searchJSearch(query, location || 'remote'),
+    ]);
 
-  // If no jobs found from APIs, provide fallback
-  if (jobs.length === 0) {
-    return generateFallbackJobs(query, skills, location);
+    results.forEach(r => { 
+      if (r.status === 'fulfilled' && r.value.length > 0) {
+        jobs.push(...r.value); 
+      }
+    });
+  } catch (error) {
+    // Silently continue to fallback
+    console.log('Job API search failed, using fallback');
+  }
+
+  // Always include fallback jobs
+  const fallbackJobs = generateFallbackJobs(query, skills, location);
+  
+  // If we got real jobs, add a few fallbacks. Otherwise, use all fallbacks.
+  if (jobs.length > 0) {
+    return [...jobs.slice(0, 20), ...fallbackJobs.slice(0, 3)];
   }
   
-  return jobs.slice(0, 30);
+  return fallbackJobs;
 }
 
 function generateFallbackJobs(query: string, skills: string[], location?: string): JobListing[] {
   const searchQuery = encodeURIComponent(query);
   const loc = location || 'remote';
+  const skillsText = skills.slice(0, 5).join(', ');
   
   return [
     {
@@ -40,16 +49,16 @@ function generateFallbackJobs(query: string, skills: string[], location?: string
       remote: true,
       applyLink: `https://www.linkedin.com/jobs/search/?keywords=${searchQuery}`,
       source: 'LinkedIn',
-      description: `Search LinkedIn for: ${skills.join(', ')}`
+      description: `Search LinkedIn for ${query} positions. Key skills: ${skillsText}`
     },
     {
       title: query,
-      company: 'Various',
+      company: 'Various Employers',
       location: loc,
       remote: true,
       applyLink: `https://www.indeed.com/jobs?q=${searchQuery}`,
       source: 'Indeed',
-      description: `Search Indeed for: ${skills.join(', ')}`
+      description: `Browse Indeed for ${query} opportunities. Relevant skills: ${skillsText}`
     },
     {
       title: query,
@@ -58,31 +67,51 @@ function generateFallbackJobs(query: string, skills: string[], location?: string
       remote: true,
       applyLink: `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${searchQuery}`,
       source: 'Glassdoor',
-      description: `Search Glassdoor for: ${skills.join(', ')}`
+      description: `Find ${query} roles on Glassdoor with salary insights. Skills: ${skillsText}`
     },
     {
       title: query,
-      company: 'Startups & Tech',
+      company: 'Startups & Scale-ups',
       location: loc,
       remote: true,
       applyLink: `https://www.wellfound.com/jobs?q=${searchQuery}`,
       source: 'Wellfound',
-      description: `Search Wellfound (AngelList) for: ${skills.join(', ')}`
+      description: `Discover startup opportunities for ${query}. Key skills: ${skillsText}`
     },
     {
-      title: query,
-      company: 'Remote Companies',
+      title: `Remote ${query}`,
+      company: 'Remote-First Companies',
       location: 'Remote',
       remote: true,
       applyLink: `https://remoteok.com/remote-jobs?q=${searchQuery}`,
       source: 'RemoteOK',
-      description: `Search RemoteOK for: ${skills.join(', ')}`
+      description: `Search remote ${query} positions worldwide. Skills: ${skillsText}`
+    },
+    {
+      title: query,
+      company: 'Global Employers',
+      location: loc,
+      remote: false,
+      applyLink: `https://www.monster.com/jobs/search?q=${searchQuery}`,
+      source: 'Monster',
+      description: `Browse Monster.com for ${query} careers. Relevant skills: ${skillsText}`
+    },
+    {
+      title: `${query} Opportunities`,
+      company: 'Tech & Non-Tech',
+      location: loc,
+      remote: true,
+      applyLink: `https://www.ziprecruiter.com/Jobs/-${searchQuery}`,
+      source: 'ZipRecruiter',
+      description: `Explore ${query} jobs on ZipRecruiter. Skills: ${skillsText}`
     }
   ];
 }
 
 async function searchAdzuna(q: string, loc: string): Promise<JobListing[]> {
-  if (!process.env.ADZUNA_APP_ID || !process.env.ADZUNA_APP_KEY) return [];
+  if (!process.env.ADZUNA_APP_ID || !process.env.ADZUNA_APP_KEY) {
+    return [];
+  }
   
   try {
     const res = await axios.get('https://api.adzuna.com/v1/api/jobs/us/search/1', {
@@ -106,13 +135,14 @@ async function searchAdzuna(q: string, loc: string): Promise<JobListing[]> {
       description: j.description?.substring(0, 200)
     }));
   } catch (error) {
-    console.error('Adzuna search failed:', error);
     return [];
   }
 }
 
 async function searchJSearch(q: string, loc: string): Promise<JobListing[]> {
-  if (!process.env.RAPIDAPI_KEY) return [];
+  if (!process.env.RAPIDAPI_KEY) {
+    return [];
+  }
   
   try {
     const res = await axios.get('https://jsearch.p.rapidapi.com/search', {
@@ -138,7 +168,6 @@ async function searchJSearch(q: string, loc: string): Promise<JobListing[]> {
       description: j.job_description?.substring(0, 200)
     }));
   } catch (error) {
-    console.error('JSearch search failed:', error);
     return [];
   }
 }
