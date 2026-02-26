@@ -1,7 +1,4 @@
-# Scrapling — adaptive web scraping framework
-# https://github.com/D4Vinci/Scrapling
-#
-# [fetchers] installs Playwright + TLS fingerprint spoofing + browser automation
-# This enables StealthyFetcher (bypasses Cloudflare, LinkedIn, etc.)
-# and Fetcher (fast HTTP with Chrome TLS impersonation)
-scrapling[fetchers]
+# Scrapling kept for its fast HTTP Fetcher (non-JS pages)
+# Jina Reader API handles all browser-rendered pages (LinkedIn etc.)
+# No Playwright browser binary needed — Jina runs the browser remotely
+scrapling
