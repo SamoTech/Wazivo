@@ -2,6 +2,7 @@ import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
 import Tesseract from 'tesseract.js';
 import axios from 'axios';
+import { MIN_CV_TEXT_LENGTH, MIN_URL_TEXT_LENGTH, getPlatformHint } from './constants';
 
 // ─────────────────────────────────────────────────────────
 // Parse a local file buffer into text
@@ -18,35 +19,6 @@ export async function parseCV(file: Buffer, mimeType: string): Promise<string> {
     return text;
   }
   throw new Error('Unsupported file type');
-}
-
-// ─────────────────────────────────────────────────────────
-// Platform hints — used ONLY in fallback error messages,
-// NOT to block attempts. Scrapling will try everything first.
-// ─────────────────────────────────────────────────────────
-const PLATFORM_HINTS: { match: string; name: string; exportTip: string }[] = [
-  {
-    match: 'linkedin.com',
-    name: 'LinkedIn',
-    exportTip:
-      'LinkedIn requires login to view full profiles. ' +
-      'To get your CV: go to your profile → click "More" → "Save to PDF" → upload that PDF here.',
-  },
-  {
-    match: 'indeed.com/resume',
-    name: 'Indeed',
-    exportTip: 'Export your résumé as PDF from Indeed settings and upload it directly.',
-  },
-  {
-    match: 'glassdoor.com',
-    name: 'Glassdoor',
-    exportTip: 'Download your résumé as PDF from Glassdoor and upload it directly.',
-  },
-];
-
-function getPlatformHint(url: string) {
-  const lower = url.toLowerCase();
-  return PLATFORM_HINTS.find(p => lower.includes(p.match)) || null;
 }
 
 // ─────────────────────────────────────────────────────────
@@ -106,13 +78,13 @@ async function tryDirectFileFetch(url: string): Promise<string | null> {
       );
     }
   } catch {
-    // silent fall-through to Scrapling
+    // silent fall-through to scraping
   }
   return null;
 }
 
 // ─────────────────────────────────────────────────────────
-// Scrapling path: call Python serverless function with absolute URL
+// Scraping path: call Python serverless function with absolute URL
 // StealthyFetcher handles Cloudflare, LinkedIn, bot-protected pages
 // ─────────────────────────────────────────────────────────
 async function fetchViaScrapling(url: string): Promise<string> {
@@ -148,7 +120,7 @@ async function fetchViaScrapling(url: string): Promise<string> {
   const data = await response.json();
   const text = (data?.text || '').toString().trim();
 
-  if (!text || text.length < 200) {
+  if (!text || text.length < MIN_URL_TEXT_LENGTH) {
     throw new Error(
       'Page loaded but not enough text was extracted. ' +
       'The content may require a login or be JavaScript-rendered.'
@@ -174,7 +146,7 @@ export async function fetchCVFromURL(url: string): Promise<string> {
 
   // 2. Fast path — direct PDF/DOCX download (no browser needed)
   const directText = await tryDirectFileFetch(url);
-  if (directText && directText.length >= 100) {
+  if (directText && directText.length >= MIN_CV_TEXT_LENGTH) {
     console.log('[cvParser] Direct file fetch succeeded');
     return directText;
   }
