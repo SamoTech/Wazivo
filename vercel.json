@@ -1,9 +1,1 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/scrapling",
-      "destination": "/api/index.py"
-    }
-  ],
-  "buildCommand": "npm run build && pip install scrapling --break-system-packages"
-}
+{}
