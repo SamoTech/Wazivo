@@ -1,41 +1,46 @@
 /**
  * Error monitoring and analytics setup
- * Supports Sentry and Vercel Analytics
+ * Supports Sentry and Vercel Analytics (both optional)
  */
 
 export function initMonitoring() {
   if (typeof window === 'undefined') return;
 
-  // Initialize Sentry if DSN is provided
+  // Initialize Sentry if DSN is provided and package is available
   if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-    import('@sentry/nextjs').then(Sentry => {
-      Sentry.init({
-        dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-        environment: process.env.NODE_ENV,
-        tracesSampleRate: 0.1,
-        replaysSessionSampleRate: 0.1,
-        replaysOnErrorSampleRate: 1.0,
-        integrations: [
-          new Sentry.Replay({
-            maskAllText: true,
-            blockAllMedia: true,
-          }),
-        ],
+    import('@sentry/nextjs')
+      .then((Sentry) => {
+        Sentry.init({
+          dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+          environment: process.env.NODE_ENV,
+          tracesSampleRate: 0.1,
+          replaysSessionSampleRate: 0.1,
+          replaysOnErrorSampleRate: 1.0,
+          integrations: [
+            new Sentry.Replay({
+              maskAllText: true,
+              blockAllMedia: true,
+            }),
+          ],
+        });
+        
+        console.log('[Monitoring] Sentry initialized');
+      })
+      .catch(() => {
+        // Sentry not installed - skip silently
+        console.log('[Monitoring] Sentry not available (package not installed)');
       });
-      
-      console.log('[Monitoring] Sentry initialized');
-    }).catch(err => {
-      console.error('[Monitoring] Failed to initialize Sentry:', err);
-    });
   }
 
-  // Initialize Vercel Analytics
+  // Initialize Vercel Analytics if available
   if (process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ID) {
-    import('@vercel/analytics').then(({ Analytics }) => {
-      console.log('[Monitoring] Vercel Analytics initialized');
-    }).catch(err => {
-      console.error('[Monitoring] Failed to initialize Vercel Analytics:', err);
-    });
+    import('@vercel/analytics')
+      .then(({ Analytics }) => {
+        console.log('[Monitoring] Vercel Analytics initialized');
+      })
+      .catch(() => {
+        console.log('[Monitoring] Vercel Analytics not available');
+      });
   }
 }
 
