@@ -1,23 +1,20 @@
 'use client';
 import { Upload, FileText, Link as LinkIcon, AlertCircle, Info } from 'lucide-react';
 import { useState } from 'react';
+import { getPlatformConfig } from '../config/platforms';
+import { isValidURL, isValidFile, checkRateLimit } from '../lib/validation';
 
-// Sites where we show a warning but still ALLOW the attempt
-const WARNED_PLATFORMS = [
-  { match: 'linkedin.com', name: 'LinkedIn', tip: 'LinkedIn may require login. We\'ll try our best — if it fails, use "Save to PDF" from your profile.' },
-  { match: 'glassdoor.com', name: 'Glassdoor', tip: 'Glassdoor may block access. If it fails, download your CV as PDF and upload directly.' },
-  { match: 'indeed.com/resume', name: 'Indeed', tip: 'Indeed résumé pages may require login. If it fails, export as PDF from Indeed settings.' },
-];
-
-function getWarning(url: string) {
-  const lower = url.toLowerCase();
-  return WARNED_PLATFORMS.find(p => lower.includes(p.match)) || null;
-}
-
-export default function FileUpload({ onUpload }: { onUpload: (data: FormData) => void }) {
+export default function FileUpload({ 
+  onUpload,
+  onProgress 
+}: { 
+  onUpload: (data: FormData) => void;
+  onProgress?: (progress: number) => void;
+}) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadType, setUploadType] = useState<'file' | 'url'>('file');
   const [url, setUrl] = useState('');
+  const [urlError, setUrlError] = useState<string | null>(null);
   const [warning, setWarning] = useState<{ name: string; tip: string } | null>(null);
 
   const handleDrop = (e: React.DragEvent) => {
@@ -28,28 +25,95 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
   };
 
   const processFile = (file: File) => {
+    // Validate file
+    const validation = isValidFile(file);
+    if (!validation.valid) {
+      console.error('[FileUpload] File validation failed:', validation.error);
+      alert(validation.error);
+      return;
+    }
+
+    // Check rate limit
+    if (!checkRateLimit('file_upload', 10, 60000)) {
+      console.warn('[FileUpload] Rate limit exceeded');
+      alert('Too many uploads. Please wait a minute and try again.');
+      return;
+    }
+
+    console.log('[FileUpload] Processing file:', file.name, file.type, file.size);
+    
     const formData = new FormData();
     formData.append('type', 'file');
     formData.append('file', file);
+    
+    // Simulate progress for file upload
+    if (onProgress) {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        onProgress(progress);
+        if (progress >= 90) clearInterval(interval);
+      }, 100);
+    }
+    
     onUpload(formData);
   };
 
   const handleURLChange = (val: string) => {
     setUrl(val);
-    setWarning(val ? getWarning(val) : null);
+    setUrlError(null);
+    
+    if (val && !isValidURL(val)) {
+      setUrlError('Please enter a valid URL starting with http:// or https://');
+      setWarning(null);
+      return;
+    }
+    
+    setWarning(val ? getPlatformConfig(val) : null);
   };
 
   const handleURLSubmit = () => {
-    if (!url.trim()) return;
+    const trimmedUrl = url.trim();
+    
+    if (!trimmedUrl) return;
+
+    // Validate URL
+    if (!isValidURL(trimmedUrl)) {
+      setUrlError('Please enter a valid URL');
+      console.error('[FileUpload] Invalid URL:', trimmedUrl);
+      return;
+    }
+
+    // Check rate limit
+    if (!checkRateLimit('url_fetch', 5, 60000)) {
+      setUrlError('Too many requests. Please wait a minute and try again.');
+      console.warn('[FileUpload] Rate limit exceeded for URL fetch');
+      return;
+    }
+
+    console.log('[FileUpload] Submitting URL:', trimmedUrl);
+    
     const formData = new FormData();
     formData.append('type', 'url');
-    formData.append('url', url.trim());
+    formData.append('url', trimmedUrl);
+    
+    // Simulate progress for URL fetch
+    if (onProgress) {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        onProgress(progress);
+        if (progress >= 90) clearInterval(interval);
+      }, 150);
+    }
+    
     onUpload(formData);
   };
 
   const switchToFile = () => {
     setUploadType('file');
     setUrl('');
+    setUrlError(null);
     setWarning(null);
   };
 
@@ -62,6 +126,7 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
           className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
             uploadType === 'file' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
           }`}
+          aria-label="Switch to file upload"
         >
           <FileText className="w-4 h-4" />File Upload
         </button>
@@ -70,6 +135,7 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
           className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
             uploadType === 'url' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
           }`}
+          aria-label="Switch to URL input"
         >
           <LinkIcon className="w-4 h-4" />URL
         </button>
@@ -94,6 +160,7 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
               className="hidden"
               accept=".pdf,.docx,.doc,image/*"
               onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])}
+              aria-label="Upload file"
             />
           </label>
           <p className="text-sm text-gray-500 mt-4">PDF, DOCX, DOC, or images (max 10MB)</p>
@@ -112,14 +179,27 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
             onKeyDown={(e) => e.key === 'Enter' && handleURLSubmit()}
             placeholder="https://example.com/resume.pdf"
             className={`w-full px-4 py-3 border rounded-lg mb-3 outline-none transition ${
-              warning
+              urlError
+                ? 'border-red-400 bg-red-50 focus:border-red-500'
+                : warning
                 ? 'border-yellow-400 bg-yellow-50 focus:border-yellow-500'
                 : 'border-gray-300 focus:border-blue-500'
             }`}
+            aria-label="Enter CV URL"
+            aria-invalid={!!urlError}
+            aria-describedby={urlError ? 'url-error' : undefined}
           />
 
-          {/* Soft warning — still allows submission */}
-          {warning && (
+          {/* URL validation error */}
+          {urlError && (
+            <div id="url-error" className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg flex items-start gap-2" role="alert">
+              <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-red-800">{urlError}</p>
+            </div>
+          )}
+
+          {/* Platform warning */}
+          {!urlError && warning && (
             <div className="mb-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg flex items-start gap-2">
               <Info className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
               <div className="text-sm text-yellow-800">
@@ -129,28 +209,29 @@ export default function FileUpload({ onUpload }: { onUpload: (data: FormData) =>
             </div>
           )}
 
-          {/* Normal info box */}
-          {!warning && (
+          {/* Info box */}
+          {!urlError && !warning && (
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
               <div className="flex items-start gap-2">
                 <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-semibold mb-1">Supported URLs:</p>
-                  <p>Direct links to PDF/DOCX files work best. For protected pages (LinkedIn, etc.) we'll attempt stealth fetching automatically.</p>
+                  <p>Direct links to PDF/DOCX files work best. For web pages, we'll extract the visible text content.</p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Always-enabled submit button */}
+          {/* Submit button */}
           <button
             onClick={handleURLSubmit}
-            disabled={!url.trim()}
+            disabled={!url.trim() || !!urlError}
             className={`w-full px-6 py-3 rounded-lg font-medium transition ${
-              url.trim()
+              url.trim() && !urlError
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
+            aria-label="Analyze from URL"
           >
             {warning ? `Try Fetching ${warning.name} Profile →` : 'Analyze from URL'}
           </button>
