@@ -42,7 +42,7 @@
 ### 📄 Smart CV Parsing
 - PDF, DOCX, DOC support
 - Image OCR with Tesseract
-- URL fetching support
+- Direct file upload
 - Multi-language support
 
 </td>
@@ -112,7 +112,6 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 | `ADZUNA_APP_ID` | ❌ Optional | Adzuna job search API | [Adzuna Developer](https://developer.adzuna.com) |
 | `ADZUNA_APP_KEY` | ❌ Optional | Adzuna API key | [Adzuna Developer](https://developer.adzuna.com) |
 | `RAPIDAPI_KEY` | ❌ Optional | RapidAPI key for JSearch | [RapidAPI](https://rapidapi.com) |
-| `SENTRY_DSN` | ❌ Optional | Sentry DSN for error monitoring | [Sentry](https://sentry.io) |
 
 ### Available Groq Models:
 - `llama-3.3-70b-versatile` (Default - Best quality)
@@ -130,10 +129,8 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 | **Styling** | Tailwind CSS 3.4 |
 | **AI/ML** | Groq (LLaMA 3.3 70B) |
 | **Parsing** | pdf-parse, mammoth, tesseract.js |
-| **Job Search** | Adzuna, JSearch, Custom APIs |
+| **Job Search** | Adzuna, JSearch APIs |
 | **Icons** | Lucide React |
-| **Testing** | Jest, React Testing Library |
-| **Monitoring** | Sentry (Optional) |
 | **Deployment** | Vercel |
 
 </div>
@@ -146,34 +143,28 @@ wazivo/
 │   └── 📂 app/
 │       ├── 📂 api/
 │       │   └── 📂 analyze/
-│       │       └── 📝 route.ts          # API endpoint
+│       │       └── 📝 route.ts          # Main API endpoint
 │       ├── 📂 components/
 │       │   ├── 📝 FileUpload.tsx        # CV upload component
 │       │   ├── 📝 LoadingState.tsx      # Loading UI
-│       │   ├── 📝 AnalysisResults.tsx   # Results display
-│       │   └── 📝 ErrorBoundary.tsx     # Error handling
+│       │   └── 📝 AnalysisResults.tsx   # Results display
 │       ├── 📂 lib/
 │       │   ├── 📝 cvParser.ts           # CV parsing logic
 │       │   ├── 📝 openaiService.ts      # AI analysis (Groq)
-│       │   ├── 📝 jobSearchService.ts   # Job search
-│       │   ├── 📝 validation.ts         # Input validation
-│       │   └── 📝 utils.ts              # Utilities
-│       ├── 📂 config/
-│       │   └── 📝 platforms.ts          # Platform configurations
+│       │   ├── 📝 jobSearchService.ts   # Job search integration
+│       │   └── 📝 utils.ts              # Utility functions
 │       ├── 📂 types/
-│       │   └── 📝 index.ts              # TypeScript types
+│       │   └── 📝 index.ts              # TypeScript type definitions
 │       ├── 🎨 globals.css               # Global styles
 │       ├── 📝 layout.tsx                # Root layout
-│       └── 📝 page.tsx                  # Main page
-├── 📂 tests/
-│   ├── 📂 unit/                         # Unit tests
-│   └── 📂 e2e/                          # E2E tests
-├── 📦 package.json
-├── ⚙️ next.config.js
-├── ⚙️ tailwind.config.ts
-├── ⚙️ tsconfig.json
-├── ⚙️ jest.config.js                    # Jest configuration
-└── 📝 CONTRIBUTING.md                   # Contribution guide
+│       └── 📝 page.tsx                  # Main page component
+├── 📦 package.json                      # Dependencies
+├── ⚙️ next.config.js                   # Next.js configuration
+├── ⚙️ tailwind.config.ts               # Tailwind configuration
+├── ⚙️ tsconfig.json                    # TypeScript configuration
+├── 📝 README.md                         # This file
+├── 📝 BRANDING.md                       # Brand guidelines
+└── 📝 LICENSE                           # MIT License
 ```
 
 ## 🚢 Deployment
@@ -186,7 +177,6 @@ wazivo/
 2. Import your GitHub repository
 3. Add environment variables:
    - `GROQ_API_KEY` (required - get from [console.groq.com](https://console.groq.com))
-   - `SENTRY_DSN` (optional - for error monitoring)
 4. Deploy! 🎉
 
 Your app will be live at: `https://wazivo.vercel.app`
@@ -211,7 +201,6 @@ Your app will be live at: `https://wazivo.vercel.app`
 | **Groq API** | **FREE** | Free tier: 14,400 requests/day |
 | **Job APIs** | Free | Adzuna & JSearch free tiers |
 | **Hosting** | Free | Vercel/Netlify free tier |
-| **Sentry** | Free | Free tier: 5k errors/month |
 | **Monthly Total** | **$0** | 🎉 Completely free! |
 
 > ⚡ **Why Groq?** Lightning-fast inference (10-100x faster than OpenAI), generous free tier, and same quality results!
@@ -258,22 +247,6 @@ We love contributions! 💙
 5. Open a Pull Request
 
 See [CONTRIBUTING.md](https://github.com/SamoTech/Wazivo/blob/main/CONTRIBUTING.md) for detailed guidelines.
-
-## 🧪 Testing
-
-```bash
-# Run unit tests
-npm test
-
-# Run tests in watch mode
-npm test:watch
-
-# Run test coverage
-npm test:coverage
-
-# Run E2E tests
-npm test:e2e
-```
 
 ## 📝 License
 
@@ -333,7 +306,5 @@ If you find Wazivo helpful:
 **[Start Analyzing Your CV Now →](https://wazivo.vercel.app)**
 
 *Powered by Groq's lightning-fast AI ⚡*
-
-*Sponsorship Policy: GitHub Sponsors only 💖*
 
 </div>
