@@ -1,53 +1,73 @@
 /**
- * Platform-specific configuration for CV URL fetching
+ * Platform-specific configuration for URL fetching
+ * Used to show appropriate warnings and guidance to users
  */
 
 export interface PlatformConfig {
-  match: string;
   name: string;
   tip: string;
-  requiresAuth?: boolean;
 }
 
-export const PLATFORM_CONFIGS: PlatformConfig[] = [
+const PLATFORM_CONFIGS: { match: string; config: PlatformConfig }[] = [
   {
     match: 'linkedin.com',
-    name: 'LinkedIn',
-    tip: 'LinkedIn may require login. We\'ll try our best — if it fails, use "Save to PDF" from your profile.',
-    requiresAuth: true,
+    config: {
+      name: 'LinkedIn',
+      tip: "LinkedIn may require login. We'll try our best — if it fails, use \"Save to PDF\" from your profile.",
+    },
   },
   {
     match: 'glassdoor.com',
-    name: 'Glassdoor',
-    tip: 'Glassdoor may block access. If it fails, download your CV as PDF and upload directly.',
-    requiresAuth: true,
+    config: {
+      name: 'Glassdoor',
+      tip: 'Glassdoor may block access. If it fails, download your CV as PDF and upload directly.',
+    },
   },
   {
     match: 'indeed.com/resume',
-    name: 'Indeed',
-    tip: 'Indeed résumé pages may require login. If it fails, export as PDF from Indeed settings.',
-    requiresAuth: true,
+    config: {
+      name: 'Indeed',
+      tip: 'Indeed résumé pages may require login. If it fails, export as PDF from Indeed settings.',
+    },
   },
   {
-    match: 'github.com',
-    name: 'GitHub',
-    tip: 'GitHub profiles work well. We\'ll extract your README or profile information.',
-    requiresAuth: false,
+    match: 'monster.com',
+    config: {
+      name: 'Monster',
+      tip: 'Monster profiles may be protected. If it fails, save your profile as PDF and upload.',
+    },
+  },
+  {
+    match: 'ziprecruiter.com',
+    config: {
+      name: 'ZipRecruiter',
+      tip: 'ZipRecruiter may require authentication. Download your profile and upload the file.',
+    },
   },
 ];
 
 /**
- * Get platform configuration for a given URL
+ * Get platform-specific configuration for a URL
  */
 export function getPlatformConfig(url: string): PlatformConfig | null {
+  if (!url) return null;
+  
   const lower = url.toLowerCase();
-  return PLATFORM_CONFIGS.find(p => lower.includes(p.match)) || null;
+  const match = PLATFORM_CONFIGS.find(p => lower.includes(p.match));
+  
+  return match ? match.config : null;
 }
 
 /**
- * Check if URL is likely to require authentication
+ * Check if URL is from a known career platform
  */
-export function requiresAuth(url: string): boolean {
-  const config = getPlatformConfig(url);
-  return config?.requiresAuth || false;
+export function isCareerPlatform(url: string): boolean {
+  return getPlatformConfig(url) !== null;
+}
+
+/**
+ * Get all supported platform names
+ */
+export function getSupportedPlatforms(): string[] {
+  return PLATFORM_CONFIGS.map(p => p.config.name);
 }
