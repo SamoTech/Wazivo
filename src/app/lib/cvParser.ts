@@ -2,7 +2,7 @@ import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
 import Tesseract from 'tesseract.js';
 import axios from 'axios';
-import { MIN_CV_TEXT_LENGTH, MIN_URL_TEXT_LENGTH, getPlatformHint } from './constants';
+import { MIN_CV_TEXT_LENGTH, getPlatformHint } from './constants';
 
 // ─────────────────────────────────────────────────────────
 // Parse a local file buffer into text
@@ -22,32 +22,36 @@ export async function parseCV(file: Buffer, mimeType: string): Promise<string> {
 }
 
 // ─────────────────────────────────────────────────────────
-// Resolve absolute base URL for internal service calls
-// Works on Vercel (all env variants) and localhost
+// Direct file fetch: Download PDF/DOCX from direct URLs
+// Only works for direct file links (e.g., https://example.com/cv.pdf)
+// Does NOT work for LinkedIn, Indeed, or other profile pages
 // ─────────────────────────────────────────────────────────
-function getBaseUrl(): string {
-  // Manually set in Vercel dashboard — most reliable
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
-  }
-  // Auto-set by Vercel: always the production domain, no protocol
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
-  // Auto-set by Vercel: current deployment URL, no protocol
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return 'http://localhost:3000';
-}
-
-// ─────────────────────────────────────────────────────────
-// Fast path: fetch PDF/DOCX directly in Node (no Python needed)
-// ─────────────────────────────────────────────────────────
-async function tryDirectFileFetch(url: string): Promise<string | null> {
-  if (!/\.(pdf|docx?)(\?.*)?$/i.test(url)) return null;
-
+export async function fetchCVFromURL(url: string): Promise<string> {
+  // 1. Validate URL format
   try {
+    new URL(url);
+  } catch {
+    throw new Error('Invalid URL. Please provide a full URL starting with https://');
+  }
+
+  // 2. Check if it's a direct file link
+  if (!/\.(pdf|docx?)(\?.*)?$/i.test(url)) {
+    const hint = getPlatformHint(url);
+    if (hint) {
+      throw new Error(
+        `This appears to be a ${hint.name} profile page.\n\n💡 ${hint.exportTip}`
+      );
+    }
+    throw new Error(
+      'Only direct links to PDF or DOCX files are supported.\n\n' +
+      '💡 Please download the file and upload it using the "File Upload" tab.'
+    );
+  }
+
+  // 3. Try to download the file
+  try {
+    console.log('[cvParser] Attempting direct file download:', url);
+    
     const response = await axios.get(url, {
       headers: {
         'User-Agent':
@@ -61,113 +65,69 @@ async function tryDirectFileFetch(url: string): Promise<string | null> {
       validateStatus: (s) => s < 500,
     });
 
-    if (response.status !== 200) return null;
-
-    const ct: string = response.headers['content-type'] || '';
-    if (ct.includes('pdf') || /\.pdf(\?.*)?$/i.test(url)) {
-      return await parseCV(Buffer.from(response.data), 'application/pdf');
+    if (response.status !== 200) {
+      throw new Error(`File download failed with status ${response.status}`);
     }
-    if (
+
+    // Determine file type
+    const ct: string = response.headers['content-type'] || '';
+    let mimeType: string;
+
+    if (ct.includes('pdf') || /\.pdf(\?.*)?$/i.test(url)) {
+      mimeType = 'application/pdf';
+    } else if (
       ct.includes('wordprocessingml') ||
       ct.includes('msword') ||
       /\.docx?(\?.*)?$/i.test(url)
     ) {
-      return await parseCV(
-        Buffer.from(response.data),
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    } else {
+      throw new Error('Downloaded file is not a valid PDF or DOCX');
+    }
+
+    // Parse the downloaded file
+    const text = await parseCV(Buffer.from(response.data), mimeType);
+
+    if (text.length < MIN_CV_TEXT_LENGTH) {
+      throw new Error('Insufficient text extracted from file. The file may be empty or corrupted.');
+    }
+
+    console.log('[cvParser] Successfully downloaded and parsed file');
+    return text;
+
+  } catch (err: any) {
+    const msg: string = err.message || 'Download failed';
+
+    // Provide helpful error messages
+    if (msg.includes('timeout') || msg.includes('ETIMEDOUT')) {
+      throw new Error(
+        'Download timed out. The file may be too large or the server is slow.\n\n' +
+        '💡 Please download the file manually and upload it using the "File Upload" tab.'
       );
     }
-  } catch {
-    // silent fall-through to scraping
-  }
-  return null;
-}
 
-// ─────────────────────────────────────────────────────────
-// Scraping path: call Python serverless function with absolute URL
-// StealthyFetcher handles Cloudflare, LinkedIn, bot-protected pages
-// ─────────────────────────────────────────────────────────
-async function fetchViaScrapling(url: string): Promise<string> {
-  const baseUrl = getBaseUrl();
-  const scraplingUrl = `${baseUrl}/api/scrapling`;
+    if (msg.includes('ENOTFOUND') || msg.includes('ECONNREFUSED')) {
+      throw new Error(
+        'Could not reach the server. Please check the URL.\n\n' +
+        '💡 Try downloading the file manually and uploading it.'
+      );
+    }
 
-  console.log(`[cvParser] Scrapling → ${scraplingUrl} for target: ${url}`);
+    if (msg.includes('403') || msg.includes('401')) {
+      throw new Error(
+        'Access denied. The file requires authentication.\n\n' +
+        '💡 Please download the file manually and upload it using the "File Upload" tab.'
+      );
+    }
 
-  let response: Response;
-  try {
-    response = await fetch(scraplingUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url }),
-      signal: AbortSignal.timeout(55000),
-    });
-  } catch (err: any) {
-    throw new Error(
-      `Scraping service unreachable (${err.message}). ` +
-      `Tried: ${scraplingUrl}. Please upload the file directly.`
-    );
-  }
-
-  if (!response.ok) {
-    let msg = `Scraping service error (HTTP ${response.status})`;
-    try {
-      const body = await response.json();
-      msg = body.error || msg;
-    } catch { /* ignore */ }
-    throw new Error(msg);
-  }
-
-  const data = await response.json();
-  const text = (data?.text || '').toString().trim();
-
-  if (!text || text.length < MIN_URL_TEXT_LENGTH) {
-    throw new Error(
-      'Page loaded but not enough text was extracted. ' +
-      'The content may require a login or be JavaScript-rendered.'
-    );
-  }
-
-  return text;
-}
-
-// ─────────────────────────────────────────────────────────
-// Main export
-// Pipeline: validate → direct file fetch → Scrapling → helpful error
-// LinkedIn and other "hard" sites are attempted via Scrapling,
-// not pre-blocked. Only show the export tip if scraping actually fails.
-// ─────────────────────────────────────────────────────────
-export async function fetchCVFromURL(url: string): Promise<string> {
-  // 1. Validate URL format
-  try {
-    new URL(url);
-  } catch {
-    throw new Error('Invalid URL. Please provide a full URL starting with https://');
-  }
-
-  // 2. Fast path — direct PDF/DOCX download (no browser needed)
-  const directText = await tryDirectFileFetch(url);
-  if (directText && directText.length >= MIN_CV_TEXT_LENGTH) {
-    console.log('[cvParser] Direct file fetch succeeded');
-    return directText;
-  }
-
-  // 3. Scrapling path — StealthyFetcher tries everything including LinkedIn
-  try {
-    return await fetchViaScrapling(url);
-  } catch (err: any) {
-    const msg: string = err.message || '';
-
-    // If Scrapling failed, append a platform-specific export tip if we know the site
-    const hint = getPlatformHint(url);
-    const tipSuffix = hint
-      ? `\n\n💡 ${hint.exportTip}`
-      : '\n\n💡 Try downloading the file and uploading it directly using the "File Upload" tab.';
-
-    // Don't double-wrap errors that already have instructions
-    if (msg.includes('upload') || msg.includes('directly') || msg.includes('PDF')) {
+    // Don't double-wrap already helpful errors
+    if (msg.includes('💡') || msg.includes('upload')) {
       throw err;
     }
 
-    throw new Error(`Failed to fetch CV: ${msg}${tipSuffix}`);
+    throw new Error(
+      `Failed to download file: ${msg}\n\n` +
+      '💡 Please download the file and upload it using the "File Upload" tab.'
+    );
   }
 }
