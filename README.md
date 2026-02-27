@@ -10,7 +10,6 @@
 [![GitHub License](https://img.shields.io/github/license/SamoTech/Wazivo?style=for-the-badge&color=green)](https://github.com/SamoTech/Wazivo/blob/main/LICENSE)
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3-F55036?style=for-the-badge&logo=meta)](https://groq.com/)
@@ -32,7 +31,7 @@
 
 **Wazivo** (وظيفو) is your intelligent career companion. Upload your CV, get AI-powered insights, discover matching jobs, identify skill gaps, and receive personalized course recommendations.
 
-> 🌟 Built with Next.js 14, TypeScript, Python, and Groq's lightning-fast AI inference for maximum performance.
+> 🌟 Built with Next.js 14, TypeScript, and Groq's lightning-fast AI inference for maximum performance.
 
 ## ✨ Key Features
 
@@ -43,7 +42,7 @@
 ### 📄 Smart CV Parsing
 - PDF, DOCX, DOC support
 - Image OCR with Tesseract
-- **🆕 URL fetching with anti-bot bypass**
+- URL fetching support
 - Multi-language support
 
 </td>
@@ -113,6 +112,7 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 | `ADZUNA_APP_ID` | ❌ Optional | Adzuna job search API | [Adzuna Developer](https://developer.adzuna.com) |
 | `ADZUNA_APP_KEY` | ❌ Optional | Adzuna API key | [Adzuna Developer](https://developer.adzuna.com) |
 | `RAPIDAPI_KEY` | ❌ Optional | RapidAPI key for JSearch | [RapidAPI](https://rapidapi.com) |
+| `SENTRY_DSN` | ❌ Optional | Sentry DSN for error monitoring | [Sentry](https://sentry.io) |
 
 ### Available Groq Models:
 - `llama-3.3-70b-versatile` (Default - Best quality)
@@ -125,16 +125,16 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 
 | Category | Technology |
 |----------|------------|
-| **Frontend** | Next.js 14 (App Router) |
-| **Backend** | Python 3.12 Serverless Functions |
+| **Framework** | Next.js 14 (App Router) |
 | **Language** | TypeScript 5.3 |
 | **Styling** | Tailwind CSS 3.4 |
 | **AI/ML** | Groq (LLaMA 3.3 70B) |
 | **Parsing** | pdf-parse, mammoth, tesseract.js |
-| **Web Scraping** | Custom Python handler (inspired by [Scrapling](https://github.com/D4Vinci/Scrapling)) |
-| **Job Search** | Adzuna, JSearch, Custom scraping |
+| **Job Search** | Adzuna, JSearch, Custom APIs |
 | **Icons** | Lucide React |
-| **Deployment** | Vercel (Next.js + Python) |
+| **Testing** | Jest, React Testing Library |
+| **Monitoring** | Sentry (Optional) |
+| **Deployment** | Vercel |
 
 </div>
 
@@ -148,65 +148,33 @@ wazivo/
 │       │   └── 📂 analyze/
 │       │       └── 📝 route.ts          # API endpoint
 │       ├── 📂 components/
-│       │   ├── 📝 FileUpload.tsx     # CV upload component
-│       │   ├── 📝 LoadingState.tsx   # Loading UI
-│       │   └── 📝 AnalysisResults.tsx # Results display
+│       │   ├── 📝 FileUpload.tsx        # CV upload component
+│       │   ├── 📝 LoadingState.tsx      # Loading UI
+│       │   ├── 📝 AnalysisResults.tsx   # Results display
+│       │   └── 📝 ErrorBoundary.tsx     # Error handling
 │       ├── 📂 lib/
-│       │   ├── 📝 cvParser.ts        # CV parsing logic
-│       │   ├── 📝 openaiService.ts   # AI analysis (Groq)
-│       │   ├── 📝 jobSearchService.ts # Job search
-│       │   └── 📝 utils.ts           # Utilities
+│       │   ├── 📝 cvParser.ts           # CV parsing logic
+│       │   ├── 📝 openaiService.ts      # AI analysis (Groq)
+│       │   ├── 📝 jobSearchService.ts   # Job search
+│       │   ├── 📝 validation.ts         # Input validation
+│       │   └── 📝 utils.ts              # Utilities
+│       ├── 📂 config/
+│       │   └── 📝 platforms.ts          # Platform configurations
 │       ├── 📂 types/
-│       │   └── 📝 index.ts           # TypeScript types
-│       ├── 🎨 globals.css          # Global styles
-│       ├── 📝 layout.tsx           # Root layout
-│       └── 📝 page.tsx             # Main page
-├── 📂 api/                          # 🆕 Python Serverless Functions
-│   ├── 📝 index.py                # URL scraping handler
-│   ├── 📝 requirements.txt        # Python dependencies
-│   └── ⚙️ pyproject.toml          # Python project config
+│       │   └── 📝 index.ts              # TypeScript types
+│       ├── 🎨 globals.css               # Global styles
+│       ├── 📝 layout.tsx                # Root layout
+│       └── 📝 page.tsx                  # Main page
+├── 📂 tests/
+│   ├── 📂 unit/                         # Unit tests
+│   └── 📂 e2e/                          # E2E tests
 ├── 📦 package.json
 ├── ⚙️ next.config.js
-├── ⚙️ vercel.json                 # Vercel deployment config
 ├── ⚙️ tailwind.config.ts
-└── ⚙️ tsconfig.json
+├── ⚙️ tsconfig.json
+├── ⚙️ jest.config.js                    # Jest configuration
+└── 📝 CONTRIBUTING.md                   # Contribution guide
 ```
-
-## 🆕 Scrapling Integration
-
-### What is it?
-
-Wazivo now includes a **Python-based web scraping service** inspired by [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) that bypasses bot protection and extracts clean text from URLs.
-
-### Features:
-- ✅ **Anti-bot headers** - Mimics real browser behavior
-- ✅ **Clean text extraction** - Removes scripts, styles, navigation
-- ✅ **Error handling** - Specific error messages for 403, 404, 999
-- ✅ **Serverless** - Runs on Vercel Python runtime
-- ✅ **No dependencies** - Pure Python stdlib
-
-### API Endpoint:
-
-```bash
-# POST /api/scrapling
-curl -X POST https://wazivo.vercel.app/api/scrapling \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com/resume"}'
-
-# Response:
-{
-  "text": "Extracted CV text...",
-  "success": true
-}
-```
-
-### Supported URLs:
-- ✅ Direct PDF/DOCX links
-- ✅ HTML portfolio pages
-- ✅ GitHub repos (README content)
-- ✅ Most public websites
-- ⚠️ LinkedIn (may still block)
-- ❌ Cloudflare-protected (needs full browser)
 
 ## 🚢 Deployment
 
@@ -217,26 +185,22 @@ curl -X POST https://wazivo.vercel.app/api/scrapling \
 1. Click the button above
 2. Import your GitHub repository
 3. Add environment variables:
-   - `GROQ_API_KEY` (get from [console.groq.com](https://console.groq.com))
+   - `GROQ_API_KEY` (required - get from [console.groq.com](https://console.groq.com))
+   - `SENTRY_DSN` (optional - for error monitoring)
 4. Deploy! 🎉
 
 Your app will be live at: `https://wazivo.vercel.app`
-
-**Vercel automatically deploys:**
-- ✅ Next.js frontend
-- ✅ Python serverless functions
-- ✅ TypeScript API routes
 
 ### Other Platforms
 
 <div align="center">
 
-| Platform | Status | Notes |
+| Platform | Status | Guide |
 |----------|--------|-------|
-| **Vercel** | ✅ Tested | Supports Next.js + Python |
-| **Netlify** | ⚠️ Limited | Next.js only (no Python functions) |
-| **Railway** | ✅ Compatible | Full Node.js + Python support |
-| **AWS Amplify** | ⚠️ Limited | Complex Python setup |
+| **Vercel** | ✅ Tested | [Deploy Guide](https://vercel.com/docs) |
+| **Netlify** | ✅ Compatible | [Deploy Guide](https://docs.netlify.com) |
+| **Railway** | ✅ Compatible | [Deploy Guide](https://docs.railway.app) |
+| **AWS Amplify** | ✅ Compatible | [Deploy Guide](https://docs.amplify.aws) |
 
 </div>
 
@@ -246,8 +210,8 @@ Your app will be live at: `https://wazivo.vercel.app`
 |---------|------|-------|
 | **Groq API** | **FREE** | Free tier: 14,400 requests/day |
 | **Job APIs** | Free | Adzuna & JSearch free tiers |
-| **Hosting** | Free | Vercel free tier |
-| **Python Functions** | Free | Included in Vercel free tier |
+| **Hosting** | Free | Vercel/Netlify free tier |
+| **Sentry** | Free | Free tier: 5k errors/month |
 | **Monthly Total** | **$0** | 🎉 Completely free! |
 
 > ⚡ **Why Groq?** Lightning-fast inference (10-100x faster than OpenAI), generous free tier, and same quality results!
@@ -273,10 +237,8 @@ Your app will be live at: `https://wazivo.vercel.app`
 
 ```mermaid
 graph LR
-    A[📄 Upload CV/URL] --> B[🔍 Parse Content]
-    B -->|URL| B1[🐍 Python Scraping Service]
-    B1 --> C[🤖 Groq AI Analysis]
-    B -->|File| C
+    A[📄 Upload CV] --> B[🔍 Parse Content]
+    B --> C[🤖 Groq AI Analysis]
     C --> D[💼 Job Search]
     C --> E[🎯 Identify Gaps]
     E --> F[📚 Course Recommendations]
@@ -296,6 +258,22 @@ We love contributions! 💙
 5. Open a Pull Request
 
 See [CONTRIBUTING.md](https://github.com/SamoTech/Wazivo/blob/main/CONTRIBUTING.md) for detailed guidelines.
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+npm test
+
+# Run tests in watch mode
+npm test:watch
+
+# Run test coverage
+npm test:coverage
+
+# Run E2E tests
+npm test:e2e
+```
 
 ## 📝 License
 
@@ -354,7 +332,7 @@ If you find Wazivo helpful:
 
 **[Start Analyzing Your CV Now →](https://wazivo.vercel.app)**
 
-*Powered by Groq's lightning-fast AI ⚡ | Inspired by [Scrapling](https://github.com/D4Vinci/Scrapling) 🕷️*
+*Powered by Groq's lightning-fast AI ⚡*
 
 *Sponsorship Policy: GitHub Sponsors only 💖*
 
