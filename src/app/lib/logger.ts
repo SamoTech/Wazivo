@@ -1,75 +1,67 @@
 /**
- * Simple logging utility with different log levels
+ * Structured logging utility
+ * In production, this should be replaced with Winston, Pino, or a logging service
  */
 
-export enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3,
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+interface LogContext {
+  [key: string]: any;
 }
 
 class Logger {
-  private level: LogLevel;
-  private serviceName: string;
+  private isDevelopment = process.env.NODE_ENV === 'development';
 
-  constructor(serviceName: string = 'Wazivo', level: LogLevel = LogLevel.INFO) {
-    this.serviceName = serviceName;
-    this.level = process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : level;
-  }
-
-  private log(level: LogLevel, message: string, ...args: any[]) {
-    if (level < this.level) return;
-
+  private log(level: LogLevel, message: string, context?: LogContext) {
     const timestamp = new Date().toISOString();
-    const levelName = LogLevel[level];
-    const prefix = `[${timestamp}] [${this.serviceName}] [${levelName}]`;
+    const logData = {
+      timestamp,
+      level,
+      message,
+      ...context,
+    };
+
+    // In production, send to logging service (e.g., DataDog, LogRocket, Sentry)
+    if (!this.isDevelopment) {
+      // TODO: Implement production logging
+      // this.sendToLoggingService(logData);
+    }
+
+    // Console output
+    const formattedMessage = `[${timestamp}] [${level.toUpperCase()}] ${message}`;
+    const contextStr = context ? ` ${JSON.stringify(context)}` : '';
 
     switch (level) {
-      case LogLevel.DEBUG:
-        console.debug(prefix, message, ...args);
+      case 'debug':
+        if (this.isDevelopment) console.debug(formattedMessage + contextStr);
         break;
-      case LogLevel.INFO:
-        console.log(prefix, message, ...args);
+      case 'info':
+        console.info(formattedMessage + contextStr);
         break;
-      case LogLevel.WARN:
-        console.warn(prefix, message, ...args);
+      case 'warn':
+        console.warn(formattedMessage + contextStr);
         break;
-      case LogLevel.ERROR:
-        console.error(prefix, message, ...args);
-        
-        // Send to monitoring service if available
-        if (typeof window !== 'undefined' && (window as any).Sentry) {
-          (window as any).Sentry.captureMessage(message, {
-            level: 'error',
-            extra: { args },
-          });
-        }
+      case 'error':
+        console.error(formattedMessage + contextStr);
         break;
     }
   }
 
-  debug(message: string, ...args: any[]) {
-    this.log(LogLevel.DEBUG, message, ...args);
+  debug(message: string, context?: LogContext) {
+    this.log('debug', message, context);
   }
 
-  info(message: string, ...args: any[]) {
-    this.log(LogLevel.INFO, message, ...args);
+  info(message: string, context?: LogContext) {
+    this.log('info', message, context);
   }
 
-  warn(message: string, ...args: any[]) {
-    this.log(LogLevel.WARN, message, ...args);
+  warn(message: string, context?: LogContext) {
+    this.log('warn', message, context);
   }
 
-  error(message: string, ...args: any[]) {
-    this.log(LogLevel.ERROR, message, ...args);
+  error(message: string, context?: LogContext) {
+    this.log('error', message, context);
   }
 }
 
-// Export singleton instance
 export const logger = new Logger();
-
-// Export factory for creating named loggers
-export function createLogger(name: string): Logger {
-  return new Logger(name);
-}
