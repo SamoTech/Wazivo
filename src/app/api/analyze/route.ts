@@ -1,107 +1,97 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { parseCV, fetchCVFromURL } from '@/app/lib/cvParser';
-import { analyzeResume, enhanceJobMatching } from '@/app/lib/openaiService';
-import { searchJobs } from '@/app/lib/jobSearchService';
-import { UPLOAD_TYPE, MIN_CV_TEXT_LENGTH } from '@/app/lib/constants';
+import { analyzeResume } from '@/app/lib/openaiService';
+import { processCVInput } from '@/app/lib/services/cv-processing.service';
+import { enrichWithJobOpportunities } from '@/app/lib/services/job-enrichment.service';
+import { getUserFriendlyMessage } from '@/app/lib/errors';
+import { logger } from '@/app/lib/logger';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
+/**
+ * Main API route for CV analysis
+ * 
+ * Flow:
+ * 1. Parse CV (file or URL)
+ * 2. AI analysis (resume breakdown)
+ * 3. Job enrichment (search matching opportunities)
+ * 4. Return comprehensive report
+ */
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  
+  logger.info('CV analysis request started', { requestId });
+
   try {
     const formData = await request.formData();
-    const type = formData.get('type') as string;
-    let cvText: string;
 
-    // ── Step 1: Parse CV ──────────────────────────────────────────
-    try {
-      if (type === UPLOAD_TYPE.FILE) {
-        const file = formData.get('file') as File;
-        if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-        const buffer = Buffer.from(await file.arrayBuffer());
-        cvText = await parseCV(buffer, file.type);
-      } else if (type === UPLOAD_TYPE.URL) {
-        const url = formData.get('url') as string;
-        if (!url) return NextResponse.json({ error: 'No URL provided' }, { status: 400 });
-        cvText = await fetchCVFromURL(url);
-      } else {
-        return NextResponse.json({ error: 'Invalid upload type' }, { status: 400 });
-      }
-    } catch (parseError: any) {
-      return NextResponse.json({ error: `Failed to parse CV: ${parseError.message}` }, { status: 400 });
-    }
+    // Step 1: Parse CV text
+    const cvText = await processCVInput(formData);
 
-    if (cvText.length < MIN_CV_TEXT_LENGTH) {
-      return NextResponse.json({
-        error: 'Insufficient text extracted from CV. Please ensure the file is readable.',
-      }, { status: 400 });
-    }
+    // Step 2: AI Analysis
+    const analysis = await analyzeResume(cvText);
 
-    // ── Step 2: AI Analysis ───────────────────────────────────────────
-    let analysis: any;
-    try {
-      analysis = await analyzeResume(cvText);
-    } catch (aiError: any) {
-      return NextResponse.json({
-        error: `AI analysis failed: ${aiError.message}. Please check your GROQ_API_KEY.`,
-      }, { status: 500 });
-    }
+    // Step 3: Job Enrichment
+    const { jobs, metadata } = await enrichWithJobOpportunities(
+      cvText,
+      analysis.candidateSummary,
+      (analysis as any).jobSearch
+    );
 
-    // ── Step 3: Job Search ────────────────────────────────────────────
-    try {
-      const jobSearch = analysis.jobSearch;  // AI-generated search block
-      const summary   = analysis.candidateSummary;
+    analysis.jobOpportunities = jobs;
 
-      const { searchQuery, alternativeQueries, enhancedSkills } = await enhanceJobMatching(
-        cvText,
-        summary?.keySkills || [],
-        summary?.title,
-        jobSearch,
-      );
+    // Expose search metadata for debugging/display
+    (analysis as any).jobSearchMeta = metadata;
 
-      // Search with primary query + top alternative
-      const queriesToSearch = [searchQuery, ...(alternativeQueries || []).slice(0, 1)];
-      const location = summary?.location || '';
-
-      const jobResults = await Promise.allSettled(
-        queriesToSearch.map(q => searchJobs(enhancedSkills, q, location))
-      );
-
-      // Merge and deduplicate results
-      const allJobs: any[] = [];
-      const seen = new Set<string>();
-      for (const result of jobResults) {
-        if (result.status === 'fulfilled') {
-          for (const job of result.value) {
-            const key = `${job.title}|${job.company}`;
-            if (!seen.has(key)) {
-              seen.add(key);
-              allJobs.push(job);
-            }
-          }
-        }
-      }
-
-      analysis.jobOpportunities = allJobs;
-
-      // Expose search metadata for debugging / display
-      analysis.jobSearchMeta = {
-        primaryQuery: searchQuery,
-        alternativeQueries,
-        location,
-      };
-
-    } catch (jobError: any) {
-      console.error('Job search error:', jobError);
-      analysis.jobOpportunities = [];
-    }
+    logger.info('CV analysis completed successfully', {
+      requestId,
+      jobsFound: jobs.length,
+      skillsIdentified: analysis.candidateSummary.keySkills.length,
+    });
 
     return NextResponse.json(analysis);
-
-  } catch (error: any) {
-    console.error('Unexpected error:', error);
-    return NextResponse.json({
-      error: error.message || 'Analysis failed unexpectedly. Please try again.',
-    }, { status: 500 });
+  } catch (error) {
+    return handleError(error, requestId);
   }
+}
+
+/**
+ * Generate unique request ID for tracking
+ */
+function generateRequestId(): string {
+  return `req_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+}
+
+/**
+ * Handle errors and return appropriate responses
+ */
+function handleError(error: unknown, requestId: string): NextResponse {
+  logger.error('CV analysis failed', {
+    requestId,
+    error: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  });
+
+  // Convert to user-friendly message
+  const userMessage =
+    error instanceof Error ? getUserFriendlyMessage(error) : 'An unexpected error occurred';
+
+  // Determine appropriate status code
+  let statusCode = 500;
+  if (error instanceof Error) {
+    const errorName = error.constructor.name;
+    if (errorName === 'CVParsingError' || errorName === 'ValidationError') {
+      statusCode = 400;
+    } else if (errorName === 'RateLimitError') {
+      statusCode = 429;
+    }
+  }
+
+  return NextResponse.json(
+    {
+      error: userMessage,
+      requestId,
+    },
+    { status: statusCode }
+  );
 }
