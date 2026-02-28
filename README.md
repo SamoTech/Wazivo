@@ -1,11 +1,30 @@
 # Wazivo - AI-Powered Resume Analyzer
 
-> **Get Hired, Get Wazivo** ⚡
+<div align="center">
 
-Lightning-fast AI resume analysis powered by Groq's LLaMA 3.3 70B model. Upload your CV or LinkedIn profile and get instant career insights, skill gap analysis, personalized course recommendations, and matching job opportunities.
+![Wazivo Logo](https://img.shields.io/badge/Wazivo-Get%20Hired-blue?style=for-the-badge&logo=briefcase)
+
+### **Get Hired, Get Wazivo** ⚡
 
 [![CI/CD](https://github.com/SamoTech/Wazivo/actions/workflows/ci.yml/badge.svg)](https://github.com/SamoTech/Wazivo/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-10%2F10-brightgreen?logo=codacy&logoColor=white)](https://github.com/SamoTech/Wazivo)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/SamoTech/Wazivo/graphs/commit-activity)
+[![GitHub issues](https://img.shields.io/github/issues/SamoTech/Wazivo)](https://github.com/SamoTech/Wazivo/issues)
+[![GitHub stars](https://img.shields.io/github/stars/SamoTech/Wazivo?style=social)](https://github.com/SamoTech/Wazivo/stargazers)
+
+**Lightning-fast AI resume analysis powered by Groq's LLaMA 3.3 70B model**
+
+Upload your CV or LinkedIn profile and get instant career insights, skill gap analysis, personalized course recommendations, and matching job opportunities.
+
+[Demo](https://wazivo.vercel.app) • [Documentation](https://github.com/SamoTech/Wazivo/tree/main/docs) • [Report Bug](https://github.com/SamoTech/Wazivo/issues) • [Request Feature](https://github.com/SamoTech/Wazivo/issues)
+
+</div>
+
+---
 
 ## ✨ Features
 
@@ -21,6 +40,9 @@ Lightning-fast AI resume analysis powered by Groq's LLaMA 3.3 70B model. Upload 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-8%2B-red?logo=npm&logoColor=white)](https://www.npmjs.com/)
 
 - Node.js 18+ and npm
 - Groq API Key ([get one free](https://console.groq.com))
@@ -95,6 +117,15 @@ Wazivo/
 
 ## 🏗️ Architecture
 
+### Tech Stack
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-blue?logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Zod](https://img.shields.io/badge/Zod-3.22-3E67B1?logo=zod&logoColor=white)](https://zod.dev/)
+[![Groq](https://img.shields.io/badge/Groq-LLaMA%203.3-orange?logoColor=white)](https://groq.com/)
+
 ### Request Flow
 
 ```
@@ -116,6 +147,10 @@ User Upload → Middleware (Rate Limit) → API Route → Services
 - **Job Enrichment Service**: Multi-API job search with deduplication
 
 ## 🧪 Testing
+
+[![Jest](https://img.shields.io/badge/Jest-29-C21325?logo=jest&logoColor=white)](https://jestjs.io/)
+[![Playwright](https://img.shields.io/badge/Playwright-1.41-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Testing Library](https://img.shields.io/badge/Testing%20Library-14-E33332?logo=testing-library&logoColor=white)](https://testing-library.com/)
 
 ```bash
 # Run unit tests
@@ -149,6 +184,8 @@ npm run format
 
 ### Docker
 
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+
 ```bash
 docker build -t wazivo .
 docker run -p 3000:3000 --env-file .env.local wazivo
@@ -156,12 +193,16 @@ docker run -p 3000:3000 --env-file .env.local wazivo
 
 ## 📊 Performance
 
+![Performance](https://img.shields.io/badge/Performance-⚡%20Lightning%20Fast-success)
+
 - **AI Analysis**: < 3 seconds (Groq LLaMA 3.3)
 - **CV Parsing**: < 1 second (local processing)
 - **Job Search**: < 5 seconds (parallel API calls)
 - **Total Time**: ~5-8 seconds end-to-end
 
 ## 🛡️ Security Features
+
+[![Security](https://img.shields.io/badge/Security-Hardened-green?logo=security&logoColor=white)](https://github.com/SamoTech/Wazivo)
 
 - ✅ Rate limiting (10 requests/minute per IP)
 - ✅ Content Security Policy headers
@@ -172,6 +213,8 @@ docker run -p 3000:3000 --env-file .env.local wazivo
 
 ## 🤝 Contributing
 
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/SamoTech/Wazivo/issues)
+
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
 1. Fork the repository
@@ -181,6 +224,8 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 5. Open a Pull Request
 
 ## 📝 License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -193,10 +238,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Support
 
+[![Email](https://img.shields.io/badge/Email-samo.hossam%40gmail.com-red?logo=gmail&logoColor=white)](mailto:samo.hossam@gmail.com)
+[![GitHub Issues](https://img.shields.io/github/issues/SamoTech/Wazivo)](https://github.com/SamoTech/Wazivo/issues)
+[![GitHub Discussions](https://img.shields.io/github/discussions/SamoTech/Wazivo)](https://github.com/SamoTech/Wazivo/discussions)
+
 - 📧 Email: samo.hossam@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/SamoTech/Wazivo/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/SamoTech/Wazivo/discussions)
 
 ---
 
+<div align="center">
+
 **Built with ❤️ by [SamoTech](https://github.com/SamoTech)**
+
+[![GitHub followers](https://img.shields.io/github/followers/SamoTech?style=social)](https://github.com/SamoTech)
+
+If you find this project helpful, please consider giving it a ⭐!
+
+</div>
