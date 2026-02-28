@@ -13,7 +13,7 @@ const PLATFORM_CONFIGS: { match: string; config: PlatformConfig }[] = [
     match: 'linkedin.com',
     config: {
       name: 'LinkedIn',
-      tip: "LinkedIn may require login. We'll try our best — if it fails, use \"Save to PDF\" from your profile.",
+      tip: 'LinkedIn may require login. We\'ll try our best — if it fails, use "Save to PDF" from your profile.',
     },
   },
   {
@@ -51,10 +51,10 @@ const PLATFORM_CONFIGS: { match: string; config: PlatformConfig }[] = [
  */
 export function getPlatformConfig(url: string): PlatformConfig | null {
   if (!url) return null;
-  
+
   const lower = url.toLowerCase();
-  const match = PLATFORM_CONFIGS.find(p => lower.includes(p.match));
-  
+  const match = PLATFORM_CONFIGS.find((p) => lower.includes(p.match));
+
   return match ? match.config : null;
 }
 
@@ -69,5 +69,5 @@ export function isCareerPlatform(url: string): boolean {
  * Get all supported platform names
  */
 export function getSupportedPlatforms(): string[] {
-  return PLATFORM_CONFIGS.map(p => p.config.name);
+  return PLATFORM_CONFIGS.map((p) => p.config.name);
 }

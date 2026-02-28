@@ -175,11 +175,10 @@ export async function analyzeResume(cvText: string): Promise<AnalysisReport> {
   }
 
   if (cvText.length > MAX_CV_LENGTH) {
-    throw new AIAnalysisError(
-      ErrorCodes.INVALID_AI_RESPONSE,
-      'CV text is too long for analysis',
-      { length: cvText.length, max: MAX_CV_LENGTH }
-    );
+    throw new AIAnalysisError(ErrorCodes.INVALID_AI_RESPONSE, 'CV text is too long for analysis', {
+      length: cvText.length,
+      max: MAX_CV_LENGTH,
+    });
   }
 
   const groq = getGroqClient();
@@ -260,11 +259,9 @@ export async function analyzeResume(cvText: string): Promise<AnalysisReport> {
     }
 
     logger.error('AI analysis failed', { error });
-    throw new AIAnalysisError(
-      ErrorCodes.AI_REQUEST_FAILED,
-      'AI analysis failed unexpectedly',
-      { originalError: error instanceof Error ? error.message : String(error) }
-    );
+    throw new AIAnalysisError(ErrorCodes.AI_REQUEST_FAILED, 'AI analysis failed unexpectedly', {
+      originalError: error instanceof Error ? error.message : String(error),
+    });
   }
 }
 

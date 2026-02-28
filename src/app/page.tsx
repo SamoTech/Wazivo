@@ -17,24 +17,24 @@ export default function Home() {
     setLoading(true);
     setError(null);
     setProgress(0);
-    
+
     try {
       console.log('[Home] Starting analysis...');
-      
-      const res = await fetch('/api/analyze', { 
-        method: 'POST', 
-        body: formData 
+
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        body: formData,
       });
-      
+
       setProgress(100);
-      
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: 'Analysis failed' }));
         const errorMessage = errorData.error || 'Analysis failed';
         console.error('[Home] Analysis failed:', errorMessage, res.status);
         throw new Error(errorMessage);
       }
-      
+
       const data = await res.json();
       console.log('[Home] Analysis successful');
       setResult(data);
@@ -42,11 +42,11 @@ export default function Home() {
       const errorMessage = e.message || 'An unexpected error occurred';
       console.error('[Home] Error during analysis:', errorMessage, e);
       setError(errorMessage);
-      
+
       // Send to error monitoring if configured
       if (typeof window !== 'undefined' && (window as any).Sentry) {
         (window as any).Sentry.captureException(e, {
-          tags: { component: 'Home', action: 'analyze' }
+          tags: { component: 'Home', action: 'analyze' },
         });
       }
     } finally {
@@ -73,11 +73,16 @@ export default function Home() {
               </h1>
             </div>
             <p className="text-2xl font-semibold text-gray-700 mb-2">Get Hired, Get Wazivo</p>
-            <p className="text-lg text-gray-600">Lightning-fast AI resume analysis powered by Groq</p>
+            <p className="text-lg text-gray-600">
+              Lightning-fast AI resume analysis powered by Groq
+            </p>
           </header>
 
           {error && (
-            <div className="max-w-2xl mx-auto mb-8 bg-red-50 border border-red-200 rounded-lg p-4" role="alert">
+            <div
+              className="max-w-2xl mx-auto mb-8 bg-red-50 border border-red-200 rounded-lg p-4"
+              role="alert"
+            >
               <p className="text-red-700 font-medium">❌ {error}</p>
               <p className="text-red-600 text-sm mt-1">Please try again or contact support</p>
             </div>
@@ -87,7 +92,7 @@ export default function Home() {
           {loading && progress > 0 && (
             <div className="max-w-2xl mx-auto mb-8">
               <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
-                <div 
+                <div
                   className="bg-blue-600 h-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                   role="progressbar"
@@ -99,18 +104,22 @@ export default function Home() {
             </div>
           )}
 
-          {loading ? <LoadingState/> : result ? (
+          {loading ? (
+            <LoadingState />
+          ) : result ? (
             <>
-              <button 
+              <button
                 onClick={handleReset}
                 className="mb-8 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg"
                 aria-label="Analyze another CV"
               >
                 ← Analyze Another CV
               </button>
-              <AnalysisResults report={result}/>
+              <AnalysisResults report={result} />
             </>
-          ) : <FileUpload onUpload={handleAnalyze} onProgress={setProgress} />}
+          ) : (
+            <FileUpload onUpload={handleAnalyze} onProgress={setProgress} />
+          )}
 
           <footer className="mt-16 text-center text-gray-500 text-sm">
             <p>Built with ❤️ by SamoTech | Powered by Groq's Lightning-Fast AI ⚡</p>

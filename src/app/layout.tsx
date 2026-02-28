@@ -7,7 +7,8 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Wazivo - Get Hired, Get Wazivo | AI Resume Analyzer',
-  description: 'AI-powered CV analysis, job matching, and career intelligence. Upload your resume and find your dream job with Wazivo.',
+  description:
+    'AI-powered CV analysis, job matching, and career intelligence. Upload your resume and find your dream job with Wazivo.',
   keywords: 'resume analyzer, CV analysis, job search, AI career tool, Wazivo, وظيفو, get hired',
   authors: [{ name: 'SamoTech' }],
   openGraph: {
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <div className="min-h-screen flex flex-col">
           <main className="flex-grow">{children}</main>
-          
+
           <footer className="bg-gray-900 text-gray-300 py-8 mt-auto">
             <div className="max-w-7xl mx-auto px-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
@@ -31,7 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div>
                   <h3 className="text-white font-semibold mb-3">Wazivo</h3>
                   <p className="text-sm text-gray-400">
-                    AI-powered resume analysis and job matching platform. Get hired faster with intelligent career insights.
+                    AI-powered resume analysis and job matching platform. Get hired faster with
+                    intelligent career insights.
                   </p>
                 </div>
 
@@ -62,9 +64,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <h3 className="text-white font-semibold mb-3">Resources</h3>
                   <ul className="space-y-2 text-sm">
                     <li>
-                      <a 
-                        href="https://github.com/SamoTech/Wazivo" 
-                        target="_blank" 
+                      <a
+                        href="https://github.com/SamoTech/Wazivo"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-white transition"
                       >
@@ -77,9 +79,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       </Link>
                     </li>
                     <li>
-                      <a 
-                        href="https://github.com/SamoTech/Wazivo/issues" 
-                        target="_blank" 
+                      <a
+                        href="https://github.com/SamoTech/Wazivo/issues"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-white transition"
                       >

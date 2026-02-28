@@ -8,7 +8,7 @@ export const UPLOAD_TYPE = {
   URL: 'url',
 } as const;
 
-export type UploadType = typeof UPLOAD_TYPE[keyof typeof UPLOAD_TYPE];
+export type UploadType = (typeof UPLOAD_TYPE)[keyof typeof UPLOAD_TYPE];
 
 // ── File Size Limits ──────────────────────────────────────
 export const FILE_SIZE = {
@@ -37,7 +37,7 @@ export const WARNED_PLATFORMS: PlatformWarning[] = [
   {
     match: 'linkedin.com',
     name: 'LinkedIn',
-    tip: "LinkedIn may require login. We'll try our best — if it fails, use \"Save to PDF\" from your profile.",
+    tip: 'LinkedIn may require login. We\'ll try our best — if it fails, use "Save to PDF" from your profile.',
   },
   {
     match: 'glassdoor.com',
@@ -92,12 +92,14 @@ export const JOB_SEARCH = {
 // ── Helper Functions ──────────────────────────────────────
 export function getPlatformWarning(url: string): PlatformWarning | null {
   const lower = url.toLowerCase();
-  return WARNED_PLATFORMS.find(p => lower.includes(p.match)) || null;
+  return WARNED_PLATFORMS.find((p) => lower.includes(p.match)) || null;
 }
 
-export function getPlatformHint(url: string): { match: string; name: string; exportTip: string } | null {
+export function getPlatformHint(
+  url: string
+): { match: string; name: string; exportTip: string } | null {
   const lower = url.toLowerCase();
-  return PLATFORM_HINTS.find(p => lower.includes(p.match)) || null;
+  return PLATFORM_HINTS.find((p) => lower.includes(p.match)) || null;
 }
 
 export function formatFileSize(bytes: number): string {
@@ -120,6 +122,9 @@ export function validateUrl(url: string): { valid: boolean; error?: string } {
     }
     return { valid: true };
   } catch {
-    return { valid: false, error: 'Invalid URL format. Please provide a full URL starting with https://' };
+    return {
+      valid: false,
+      error: 'Invalid URL format. Please provide a full URL starting with https://',
+    };
   }
 }

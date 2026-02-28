@@ -65,22 +65,22 @@ export const ErrorCodes = {
   FETCH_FAILED: 'FETCH_FAILED',
   PARSE_FAILED: 'PARSE_FAILED',
   LOGIN_REQUIRED: 'LOGIN_REQUIRED',
-  
+
   // AI Analysis
   API_KEY_MISSING: 'API_KEY_MISSING',
   AI_REQUEST_FAILED: 'AI_REQUEST_FAILED',
   INVALID_AI_RESPONSE: 'INVALID_AI_RESPONSE',
   AI_TIMEOUT: 'AI_TIMEOUT',
-  
+
   // Job Search
   JOB_API_FAILED: 'JOB_API_FAILED',
   NO_JOBS_FOUND: 'NO_JOBS_FOUND',
-  
+
   // Validation
   INVALID_URL: 'INVALID_URL',
   INVALID_FILE: 'INVALID_FILE',
   MISSING_FIELD: 'MISSING_FIELD',
-  
+
   // Rate Limiting
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
 } as const;
@@ -103,7 +103,7 @@ export function getUserFriendlyMessage(error: Error): string {
         return 'Failed to parse CV. Please try a different format.';
     }
   }
-  
+
   if (error instanceof AIAnalysisError) {
     switch (error.code) {
       case ErrorCodes.API_KEY_MISSING:
@@ -114,14 +114,14 @@ export function getUserFriendlyMessage(error: Error): string {
         return 'AI analysis failed. Please try again.';
     }
   }
-  
+
   if (error instanceof ValidationError) {
     return error.message; // Validation messages are already user-friendly
   }
-  
+
   if (error instanceof RateLimitError) {
     return `Too many requests. Please wait ${error.retryAfter} seconds and try again.`;
   }
-  
+
   return 'An unexpected error occurred. Please try again.';
 }

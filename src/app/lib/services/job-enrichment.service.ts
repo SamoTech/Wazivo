@@ -48,7 +48,7 @@ export async function enrichWithJobOpportunities(
     });
 
     const jobResults = await Promise.allSettled(
-      queriesToSearch.map(q => searchJobs(enhancedSkills, q, location))
+      queriesToSearch.map((q) => searchJobs(enhancedSkills, q, location))
     );
 
     // Merge and deduplicate results
@@ -84,9 +84,7 @@ export async function enrichWithJobOpportunities(
 /**
  * Deduplicate job listings using normalized keys
  */
-function deduplicateJobs(
-  jobResults: PromiseSettledResult<JobListing[]>[]
-): JobListing[] {
+function deduplicateJobs(jobResults: PromiseSettledResult<JobListing[]>[]): JobListing[] {
   const allJobs: JobListing[] = [];
   const seen = new Set<string>();
 

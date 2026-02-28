@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { getPlatformConfig } from '../config/platforms';
 import { isValidURL, isValidFile, checkRateLimit } from '../lib/validation';
 
-export default function FileUpload({ 
+export default function FileUpload({
   onUpload,
-  onProgress 
-}: { 
+  onProgress,
+}: {
   onUpload: (data: FormData) => void;
   onProgress?: (progress: number) => void;
 }) {
@@ -41,11 +41,11 @@ export default function FileUpload({
     }
 
     console.log('[FileUpload] Processing file:', file.name, file.type, file.size);
-    
+
     const formData = new FormData();
     formData.append('type', 'file');
     formData.append('file', file);
-    
+
     // Simulate progress for file upload
     if (onProgress) {
       let progress = 0;
@@ -55,26 +55,26 @@ export default function FileUpload({
         if (progress >= 90) clearInterval(interval);
       }, 100);
     }
-    
+
     onUpload(formData);
   };
 
   const handleURLChange = (val: string) => {
     setUrl(val);
     setUrlError(null);
-    
+
     if (val && !isValidURL(val)) {
       setUrlError('Please enter a valid URL starting with http:// or https://');
       setWarning(null);
       return;
     }
-    
+
     setWarning(val ? getPlatformConfig(val) : null);
   };
 
   const handleURLSubmit = () => {
     const trimmedUrl = url.trim();
-    
+
     if (!trimmedUrl) return;
 
     // Validate URL
@@ -92,11 +92,11 @@ export default function FileUpload({
     }
 
     console.log('[FileUpload] Submitting URL:', trimmedUrl);
-    
+
     const formData = new FormData();
     formData.append('type', 'url');
     formData.append('url', trimmedUrl);
-    
+
     // Simulate progress for URL fetch
     if (onProgress) {
       let progress = 0;
@@ -106,7 +106,7 @@ export default function FileUpload({
         if (progress >= 90) clearInterval(interval);
       }, 150);
     }
-    
+
     onUpload(formData);
   };
 
@@ -128,7 +128,8 @@ export default function FileUpload({
           }`}
           aria-label="Switch to file upload"
         >
-          <FileText className="w-4 h-4" />File Upload
+          <FileText className="w-4 h-4" />
+          File Upload
         </button>
         <button
           onClick={() => setUploadType('url')}
@@ -137,7 +138,8 @@ export default function FileUpload({
           }`}
           aria-label="Switch to URL input"
         >
-          <LinkIcon className="w-4 h-4" />URL
+          <LinkIcon className="w-4 h-4" />
+          URL
         </button>
       </div>
 
@@ -145,7 +147,10 @@ export default function FileUpload({
       {uploadType === 'file' ? (
         <div
           onDrop={handleDrop}
-          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
           onDragLeave={() => setIsDragging(false)}
           className={`border-2 border-dashed rounded-xl p-12 text-center transition ${
             isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
@@ -166,7 +171,10 @@ export default function FileUpload({
           <p className="text-sm text-gray-500 mt-4">PDF, DOCX, DOC, or images (max 10MB)</p>
           <div className="mt-5 p-3 bg-blue-50 rounded-lg text-xs text-blue-700 text-left">
             <p className="font-semibold mb-1">💡 Have a LinkedIn profile?</p>
-            <p>Go to your profile → click <strong>More</strong> → <strong>Save to PDF</strong> → upload here for best results.</p>
+            <p>
+              Go to your profile → click <strong>More</strong> → <strong>Save to PDF</strong> →
+              upload here for best results.
+            </p>
           </div>
         </div>
       ) : (
@@ -182,8 +190,8 @@ export default function FileUpload({
               urlError
                 ? 'border-red-400 bg-red-50 focus:border-red-500'
                 : warning
-                ? 'border-yellow-400 bg-yellow-50 focus:border-yellow-500'
-                : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-yellow-400 bg-yellow-50 focus:border-yellow-500'
+                  : 'border-gray-300 focus:border-blue-500'
             }`}
             aria-label="Enter CV URL"
             aria-invalid={!!urlError}
@@ -192,7 +200,11 @@ export default function FileUpload({
 
           {/* URL validation error */}
           {urlError && (
-            <div id="url-error" className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg flex items-start gap-2" role="alert">
+            <div
+              id="url-error"
+              className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg flex items-start gap-2"
+              role="alert"
+            >
               <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
               <p className="text-sm text-red-800">{urlError}</p>
             </div>
@@ -216,7 +228,10 @@ export default function FileUpload({
                 <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-semibold mb-1">Supported URLs:</p>
-                  <p>Direct links to PDF/DOCX files work best. For web pages, we'll extract the visible text content.</p>
+                  <p>
+                    Direct links to PDF/DOCX files work best. For web pages, we'll extract the
+                    visible text content.
+                  </p>
                 </div>
               </div>
             </div>

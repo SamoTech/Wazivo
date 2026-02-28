@@ -28,30 +28,23 @@ export async function processCVInput(formData: FormData): Promise<string> {
     } else if (type === UPLOAD_TYPE.URL) {
       cvText = await processURLUpload(formData);
     } else {
-      throw new CVParsingError(
-        ErrorCodes.INVALID_FILE,
-        `Invalid upload type: ${type}`,
-        { type }
-      );
+      throw new CVParsingError(ErrorCodes.INVALID_FILE, `Invalid upload type: ${type}`, { type });
     }
   } catch (error) {
     if (error instanceof CVParsingError) throw error;
-    
+
     logger.error('CV processing failed', { error, type });
-    throw new CVParsingError(
-      ErrorCodes.PARSE_FAILED,
-      'Failed to process CV input',
-      { originalError: error instanceof Error ? error.message : String(error) }
-    );
+    throw new CVParsingError(ErrorCodes.PARSE_FAILED, 'Failed to process CV input', {
+      originalError: error instanceof Error ? error.message : String(error),
+    });
   }
 
   // Validate minimum text length
   if (cvText.length < MIN_CV_TEXT_LENGTH) {
-    throw new CVParsingError(
-      ErrorCodes.INSUFFICIENT_TEXT,
-      'Not enough text extracted from CV',
-      { textLength: cvText.length, minRequired: MIN_CV_TEXT_LENGTH }
-    );
+    throw new CVParsingError(ErrorCodes.INSUFFICIENT_TEXT, 'Not enough text extracted from CV', {
+      textLength: cvText.length,
+      minRequired: MIN_CV_TEXT_LENGTH,
+    });
   }
 
   logger.info('CV processed successfully', { textLength: cvText.length });
@@ -63,7 +56,7 @@ export async function processCVInput(formData: FormData): Promise<string> {
  */
 async function processFileUpload(formData: FormData): Promise<string> {
   const file = formData.get('file') as File;
-  
+
   if (!file) {
     throw new CVParsingError(ErrorCodes.INVALID_FILE, 'No file provided');
   }
@@ -83,7 +76,7 @@ async function processFileUpload(formData: FormData): Promise<string> {
  */
 async function processURLUpload(formData: FormData): Promise<string> {
   const url = formData.get('url') as string;
-  
+
   if (!url) {
     throw new CVParsingError(ErrorCodes.INVALID_URL, 'No URL provided');
   }

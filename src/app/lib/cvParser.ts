@@ -27,7 +27,9 @@ export async function parseCV(file: Buffer, mimeType: string): Promise<string> {
       const result = await mammoth.extractRawText({ buffer: file });
       text = result.value;
     } else if (mimeType.startsWith('image/')) {
-      const { data: { text: extractedText } } = await Tesseract.recognize(file, 'eng');
+      const {
+        data: { text: extractedText },
+      } = await Tesseract.recognize(file, 'eng');
       text = extractedText;
     } else {
       throw new CVParsingError(
@@ -37,24 +39,21 @@ export async function parseCV(file: Buffer, mimeType: string): Promise<string> {
     }
 
     if (text.length > MAX_CV_SIZE) {
-      throw new CVParsingError(
-        ErrorCodes.FILE_TOO_LARGE,
-        'CV content exceeds maximum size limit',
-        { size: text.length, max: MAX_CV_SIZE }
-      );
+      throw new CVParsingError(ErrorCodes.FILE_TOO_LARGE, 'CV content exceeds maximum size limit', {
+        size: text.length,
+        max: MAX_CV_SIZE,
+      });
     }
 
     logger.info('CV parsed successfully', { textLength: text.length });
     return text;
   } catch (error) {
     if (error instanceof CVParsingError) throw error;
-    
+
     logger.error('CV parsing failed', { error, mimeType });
-    throw new CVParsingError(
-      ErrorCodes.PARSE_FAILED,
-      'Failed to extract text from file',
-      { originalError: error instanceof Error ? error.message : String(error) }
-    );
+    throw new CVParsingError(ErrorCodes.PARSE_FAILED, 'Failed to extract text from file', {
+      originalError: error instanceof Error ? error.message : String(error),
+    });
   }
 }
 
@@ -70,7 +69,7 @@ function isProtectedPlatform(url: string): boolean {
     'monster.com',
   ];
   const lower = url.toLowerCase();
-  return protectedDomains.some(domain => lower.includes(domain));
+  return protectedDomains.some((domain) => lower.includes(domain));
 }
 
 function isLinkedIn(url: string): boolean {
@@ -91,7 +90,7 @@ function detectLinkedInLoginWall(content: string): boolean {
     'sign up',
   ];
 
-  return loginSignals.some(signal => lower.includes(signal)) && content.length < 1000;
+  return loginSignals.some((signal) => lower.includes(signal)) && content.length < 1000;
 }
 
 /**
@@ -127,17 +126,15 @@ async function fetchViaJinaReader(url: string): Promise<string> {
     const response = await axios.get(jinaUrl, {
       headers,
       timeout: 45000,
-      validateStatus: status => status === 200, // Only accept 200
+      validateStatus: (status) => status === 200, // Only accept 200
     });
 
     const content = response.data.trim();
 
     if (!content || content.length < 100) {
-      throw new CVParsingError(
-        ErrorCodes.INSUFFICIENT_TEXT,
-        'Page returned too little content',
-        { contentLength: content.length }
-      );
+      throw new CVParsingError(ErrorCodes.INSUFFICIENT_TEXT, 'Page returned too little content', {
+        contentLength: content.length,
+      });
     }
 
     // Detect LinkedIn login wall
@@ -166,11 +163,9 @@ async function fetchViaJinaReader(url: string): Promise<string> {
       }
 
       if (axiosError.response?.status === 401 || axiosError.response?.status === 403) {
-        throw new CVParsingError(
-          ErrorCodes.LOGIN_REQUIRED,
-          'The page requires authentication',
-          { status: axiosError.response.status }
-        );
+        throw new CVParsingError(ErrorCodes.LOGIN_REQUIRED, 'The page requires authentication', {
+          status: axiosError.response.status,
+        });
       }
 
       if (axiosError.code === 'ECONNABORTED') {
@@ -183,11 +178,9 @@ async function fetchViaJinaReader(url: string): Promise<string> {
     }
 
     logger.error('Jina Reader fetch failed', { error, url: url.substring(0, 50) });
-    throw new CVParsingError(
-      ErrorCodes.FETCH_FAILED,
-      'Failed to fetch CV from URL',
-      { originalError: error instanceof Error ? error.message : String(error) }
-    );
+    throw new CVParsingError(ErrorCodes.FETCH_FAILED, 'Failed to fetch CV from URL', {
+      originalError: error instanceof Error ? error.message : String(error),
+    });
   }
 }
 
@@ -212,7 +205,7 @@ async function tryDirectFileFetch(url: string): Promise<string | null> {
       timeout: 20000,
       responseType: 'arraybuffer',
       maxRedirects: 5,
-      validateStatus: status => status === 200,
+      validateStatus: (status) => status === 200,
     });
 
     const ct: string = response.headers['content-type'] || '';

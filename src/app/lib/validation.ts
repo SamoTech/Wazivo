@@ -15,9 +15,9 @@ export function isValidFile(file: File): { valid: boolean; error?: string } {
   }
 
   if (file.size > FILE_SIZE.MAX_BYTES) {
-    return { 
-      valid: false, 
-      error: `File size (${(file.size / (1024 * 1024)).toFixed(2)} MB) exceeds maximum allowed size of ${FILE_SIZE.MAX_MB} MB` 
+    return {
+      valid: false,
+      error: `File size (${(file.size / (1024 * 1024)).toFixed(2)} MB) exceeds maximum allowed size of ${FILE_SIZE.MAX_MB} MB`,
     };
   }
 
@@ -31,9 +31,9 @@ export function isValidFile(file: File): { valid: boolean; error?: string } {
   const isValidType = validTypes.includes(file.type) || file.type.startsWith('image/');
 
   if (!isValidType) {
-    return { 
-      valid: false, 
-      error: 'Invalid file type. Please upload PDF, DOCX, DOC, or image files.' 
+    return {
+      valid: false,
+      error: 'Invalid file type. Please upload PDF, DOCX, DOC, or image files.',
     };
   }
 
@@ -53,16 +53,12 @@ export function isValidURL(url: string): boolean {
  * @param maxAttempts - Maximum attempts allowed
  * @param windowMs - Time window in milliseconds
  */
-export function checkRateLimit(
-  key: string, 
-  maxAttempts: number, 
-  windowMs: number
-): boolean {
+export function checkRateLimit(key: string, maxAttempts: number, windowMs: number): boolean {
   if (typeof window === 'undefined') return true; // Server-side always allowed
 
   const now = Date.now();
   const storageKey = `ratelimit_${key}`;
-  
+
   try {
     const stored = localStorage.getItem(storageKey);
     const data = stored ? JSON.parse(stored) : { attempts: [], firstAttempt: now };
@@ -78,7 +74,7 @@ export function checkRateLimit(
     // Add current attempt
     data.attempts.push(now);
     localStorage.setItem(storageKey, JSON.stringify(data));
-    
+
     return true;
   } catch (error) {
     // If localStorage fails (privacy mode, etc.), allow the request
@@ -92,7 +88,7 @@ export function checkRateLimit(
  */
 export function clearRateLimit(key: string): void {
   if (typeof window === 'undefined') return;
-  
+
   try {
     localStorage.removeItem(`ratelimit_${key}`);
   } catch (error) {
@@ -114,7 +110,17 @@ export function sanitizeInput(input: string): string {
  * Validate file extension
  */
 export function hasValidExtension(filename: string): boolean {
-  const validExtensions = ['.pdf', '.docx', '.doc', '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+  const validExtensions = [
+    '.pdf',
+    '.docx',
+    '.doc',
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.gif',
+    '.bmp',
+    '.webp',
+  ];
   const ext = filename.toLowerCase().substring(filename.lastIndexOf('.'));
   return validExtensions.includes(ext);
 }

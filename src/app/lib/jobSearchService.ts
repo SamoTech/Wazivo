@@ -74,18 +74,14 @@ function cleanJobQuery(raw: string): string {
 function cleanLocation(raw: string): string {
   if (!raw) return '';
   // Many job APIs work better with city only
-  const parts = raw.split(',').map(p => p.trim());
+  const parts = raw.split(',').map((p) => p.trim());
   return parts[0] || '';
 }
 
 /**
  * Generate fallback job search links
  */
-function generateFallbackJobs(
-  query: string,
-  skills: string[],
-  location: string
-): JobListing[] {
+function generateFallbackJobs(query: string, skills: string[], location: string): JobListing[] {
   const q = encodeURIComponent(query);
   const loc = encodeURIComponent(location || 'remote');
   const skillsText = skills.slice(0, 4).join(', ');
@@ -141,7 +137,7 @@ function generateFallbackJobs(
     },
   ];
 
-  return fallbacks.slice(0, MAX_FALLBACK_JOBS).map(f => ({
+  return fallbacks.slice(0, MAX_FALLBACK_JOBS).map((f) => ({
     title: f.title,
     company: f.company,
     location: location || 'Remote / Worldwide',
@@ -216,17 +212,15 @@ async function searchJSearch(q: string, loc: string): Promise<JobListing[]> {
       timeout: TIMEOUT,
     });
 
-    return (res.data.data || [])
-      .slice(0, MAX_JOBS)
-      .map((j: any) => ({
-        title: j.job_title,
-        company: j.employer_name,
-        location: j.job_city || j.job_country || 'Remote',
-        remote: j.job_is_remote || false,
-        applyLink: j.job_apply_link,
-        source: 'JSearch',
-        description: j.job_description?.substring(0, 200),
-      }));
+    return (res.data.data || []).slice(0, MAX_JOBS).map((j: any) => ({
+      title: j.job_title,
+      company: j.employer_name,
+      location: j.job_city || j.job_country || 'Remote',
+      remote: j.job_is_remote || false,
+      applyLink: j.job_apply_link,
+      source: 'JSearch',
+      description: j.job_description?.substring(0, 200),
+    }));
   } catch (error) {
     if (axios.isAxiosError(error)) {
       logger.warn('JSearch API error', {

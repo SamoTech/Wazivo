@@ -1,4 +1,11 @@
-import { isValidFile, isValidURL, sanitizeInput, hasValidExtension, checkRateLimit, clearRateLimit } from '../validation';
+import {
+  isValidFile,
+  isValidURL,
+  sanitizeInput,
+  hasValidExtension,
+  checkRateLimit,
+  clearRateLimit,
+} from '../validation';
 
 describe('isValidFile', () => {
   const makeFile = (name: string, type: string, size: number) =>

@@ -25,10 +25,10 @@ let lastCleanup = Date.now();
  */
 function cleanupExpiredEntries(): void {
   const now = Date.now();
-  
+
   // Only cleanup if enough time has passed
   if (now - lastCleanup < CLEANUP_INTERVAL) return;
-  
+
   let removedCount = 0;
   for (const [key, data] of rateLimitMap.entries()) {
     if (now > data.resetTime) {
@@ -36,9 +36,9 @@ function cleanupExpiredEntries(): void {
       removedCount++;
     }
   }
-  
+
   lastCleanup = now;
-  
+
   if (removedCount > 0) {
     console.log(`[Middleware] Cleaned up ${removedCount} expired rate limit entries`);
   }
@@ -47,12 +47,9 @@ function cleanupExpiredEntries(): void {
 /**
  * Check and update rate limit for a request
  */
-function checkRateLimit(
-  pathname: string,
-  ip: string
-): { allowed: boolean; retryAfter?: number } {
+function checkRateLimit(pathname: string, ip: string): { allowed: boolean; retryAfter?: number } {
   const limit = RATE_LIMITS[pathname as keyof typeof RATE_LIMITS];
-  
+
   if (!limit) {
     return { allowed: true };
   }

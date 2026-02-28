@@ -16,13 +16,16 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">1. Acceptance of Terms</h2>
             <p className="text-gray-700 leading-relaxed">
-              By accessing and using Wazivo ("the Service"), you accept and agree to be bound by these Terms of Service.
-              If you do not agree to these terms, please do not use the Service.
+              By accessing and using Wazivo ("the Service"), you accept and agree to be bound by
+              these Terms of Service. If you do not agree to these terms, please do not use the
+              Service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">2. Description of Service</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+              2. Description of Service
+            </h2>
             <p className="text-gray-700 leading-relaxed">
               Wazivo is an AI-powered resume analysis platform that provides:
             </p>
@@ -37,7 +40,7 @@ export default function TermsOfService() {
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">3. User Responsibilities</h2>
-            
+
             <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 You Agree To:</h3>
             <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
               <li>Provide accurate and truthful information</li>
@@ -60,25 +63,30 @@ export default function TermsOfService() {
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">4. Intellectual Property</h2>
-            
+
             <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 Your Content</h3>
             <p className="text-gray-700 leading-relaxed">
-              You retain all ownership rights to the resumes and content you upload. By using the Service, you grant us
-              a temporary license to process your content solely for providing the analysis service.
+              You retain all ownership rights to the resumes and content you upload. By using the
+              Service, you grant us a temporary license to process your content solely for providing
+              the analysis service.
             </p>
 
             <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 Our Content</h3>
             <p className="text-gray-700 leading-relaxed">
-              All Service content, features, and functionality (including but not limited to text, graphics, logos, and software)
-              are owned by Wazivo and protected by international copyright, trademark, and other intellectual property laws.
+              All Service content, features, and functionality (including but not limited to text,
+              graphics, logos, and software) are owned by Wazivo and protected by international
+              copyright, trademark, and other intellectual property laws.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">5. Disclaimer of Warranties</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+              5. Disclaimer of Warranties
+            </h2>
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4">
               <p className="text-gray-700 leading-relaxed">
-                <strong>IMPORTANT:</strong> The Service is provided "AS IS" and "AS AVAILABLE" without warranties of any kind, either express or implied.
+                <strong>IMPORTANT:</strong> The Service is provided "AS IS" and "AS AVAILABLE"
+                without warranties of any kind, either express or implied.
               </p>
             </div>
             <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
@@ -91,7 +99,9 @@ export default function TermsOfService() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">6. Limitation of Liability</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+              6. Limitation of Liability
+            </h2>
             <p className="text-gray-700 leading-relaxed">
               To the maximum extent permitted by law, Wazivo shall not be liable for:
             </p>
@@ -110,14 +120,23 @@ export default function TermsOfService() {
               The Service integrates with third-party providers:
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-              <li><strong>Groq:</strong> AI analysis</li>
-              <li><strong>Adzuna & JSearch:</strong> Job listings</li>
-              <li><strong>Jina AI:</strong> URL content extraction</li>
-              <li><strong>Udemy:</strong> Course recommendations</li>
+              <li>
+                <strong>Groq:</strong> AI analysis
+              </li>
+              <li>
+                <strong>Adzuna & JSearch:</strong> Job listings
+              </li>
+              <li>
+                <strong>Jina AI:</strong> URL content extraction
+              </li>
+              <li>
+                <strong>Udemy:</strong> Course recommendations
+              </li>
             </ul>
             <p className="text-gray-700 leading-relaxed mt-4">
-              We are not responsible for the availability, content, or practices of these third-party services.
-              Your use of third-party services is subject to their respective terms and policies.
+              We are not responsible for the availability, content, or practices of these
+              third-party services. Your use of third-party services is subject to their respective
+              terms and policies.
             </p>
           </section>
 
@@ -125,8 +144,10 @@ export default function TermsOfService() {
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">8. Data and Privacy</h2>
             <p className="text-gray-700 leading-relaxed">
               Your use of the Service is also governed by our{' '}
-              <a href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</a>.
-              Key points:
+              <a href="/privacy" className="text-blue-600 hover:underline">
+                Privacy Policy
+              </a>
+              . Key points:
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
               <li>We do NOT store your uploaded resumes</li>
@@ -136,7 +157,9 @@ export default function TermsOfService() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">9. Rate Limiting and Fair Use</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+              9. Rate Limiting and Fair Use
+            </h2>
             <p className="text-gray-700 leading-relaxed">
               To ensure service availability for all users:
             </p>
@@ -167,15 +190,16 @@ export default function TermsOfService() {
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">11. Changes to Terms</h2>
             <p className="text-gray-700 leading-relaxed">
               We may modify these Terms at any time. Changes become effective upon posting.
-              Continued use of the Service after changes constitutes acceptance of the modified Terms.
+              Continued use of the Service after changes constitutes acceptance of the modified
+              Terms.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">12. Governing Law</h2>
             <p className="text-gray-700 leading-relaxed">
-              These Terms shall be governed by and construed in accordance with the laws of your jurisdiction,
-              without regard to conflict of law principles.
+              These Terms shall be governed by and construed in accordance with the laws of your
+              jurisdiction, without regard to conflict of law principles.
             </p>
           </section>
 
@@ -185,8 +209,18 @@ export default function TermsOfService() {
               For questions about these Terms, contact us:
             </p>
             <ul className="list-none text-gray-700 space-y-2 ml-4">
-              <li><strong>Email:</strong> <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">samo.hossam@gmail.com</a></li>
-              <li><strong>Website:</strong> <a href="https://wazivo.vercel.app" className="text-blue-600 hover:underline">wazivo.vercel.app</a></li>
+              <li>
+                <strong>Email:</strong>{' '}
+                <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">
+                  samo.hossam@gmail.com
+                </a>
+              </li>
+              <li>
+                <strong>Website:</strong>{' '}
+                <a href="https://wazivo.vercel.app" className="text-blue-600 hover:underline">
+                  wazivo.vercel.app
+                </a>
+              </li>
             </ul>
           </section>
         </div>

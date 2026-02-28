@@ -10,7 +10,7 @@ export const maxDuration = 60;
 
 /**
  * Main API route for CV analysis
- * 
+ *
  * Flow:
  * 1. Parse CV (file or URL)
  * 2. AI analysis (resume breakdown)
@@ -19,7 +19,7 @@ export const maxDuration = 60;
  */
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
-  
+
   logger.info('CV analysis request started', { requestId });
 
   try {
