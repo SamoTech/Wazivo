@@ -185,7 +185,7 @@ export default function TermsOfService() {
               For questions about these Terms, contact us:
             </p>
             <ul className="list-none text-gray-700 space-y-2 ml-4">
-              <li><strong>Email:</strong> <a href="mailto:support@wazivo.com" className="text-blue-600 hover:underline">support@wazivo.com</a></li>
+              <li><strong>Email:</strong> <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">samo.hossam@gmail.com</a></li>
               <li><strong>Website:</strong> <a href="https://wazivo.vercel.app" className="text-blue-600 hover:underline">wazivo.vercel.app</a></li>
             </ul>
           </section>

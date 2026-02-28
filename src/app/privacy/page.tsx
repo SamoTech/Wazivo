@@ -99,7 +99,7 @@ export default function PrivacyPolicy() {
               <li><strong>Withdraw Consent:</strong> At any time</li>
             </ul>
             <p className="text-gray-700 leading-relaxed mt-4">
-              To exercise these rights, contact us at: <a href="mailto:privacy@wazivo.com" className="text-blue-600 hover:underline">privacy@wazivo.com</a>
+              To exercise these rights, contact us at: <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">samo.hossam@gmail.com</a>
             </p>
           </section>
 
@@ -161,7 +161,7 @@ export default function PrivacyPolicy() {
               If you have questions about this Privacy Policy, please contact us:
             </p>
             <ul className="list-none text-gray-700 space-y-2 ml-4">
-              <li><strong>Email:</strong> <a href="mailto:privacy@wazivo.com" className="text-blue-600 hover:underline">privacy@wazivo.com</a></li>
+              <li><strong>Email:</strong> <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">samo.hossam@gmail.com</a></li>
               <li><strong>Website:</strong> <a href="https://wazivo.vercel.app" className="text-blue-600 hover:underline">wazivo.vercel.app</a></li>
             </ul>
           </section>

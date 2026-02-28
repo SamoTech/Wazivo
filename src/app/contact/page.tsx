@@ -25,8 +25,8 @@ export default function ContactPage() {
                 <Mail className="w-6 h-6 text-blue-600 mt-1" />
                 <div>
                   <h3 className="font-semibold text-gray-900">General Support</h3>
-                  <a href="mailto:support@wazivo.com" className="text-blue-600 hover:underline">
-                    support@wazivo.com
+                  <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">
+                    samo.hossam@gmail.com
                   </a>
                   <p className="text-sm text-gray-600 mt-1">For technical issues and general inquiries</p>
                 </div>
@@ -36,8 +36,8 @@ export default function ContactPage() {
                 <Shield className="w-6 h-6 text-blue-600 mt-1" />
                 <div>
                   <h3 className="font-semibold text-gray-900">Privacy & Data Protection</h3>
-                  <a href="mailto:privacy@wazivo.com" className="text-blue-600 hover:underline">
-                    privacy@wazivo.com
+                  <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">
+                    samo.hossam@gmail.com
                   </a>
                   <p className="text-sm text-gray-600 mt-1">For GDPR/CCPA requests and privacy concerns</p>
                 </div>
@@ -124,7 +124,7 @@ export default function ContactPage() {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-900 mb-3">How to Submit a Request</h3>
               <ol className="space-y-2 text-sm text-gray-700 list-decimal list-inside">
-                <li>Email us at <a href="mailto:privacy@wazivo.com" className="text-blue-600 hover:underline">privacy@wazivo.com</a></li>
+                <li>Email us at <a href="mailto:samo.hossam@gmail.com" className="text-blue-600 hover:underline">samo.hossam@gmail.com</a></li>
                 <li>Specify which right you wish to exercise</li>
                 <li>Provide identification (to verify your identity)</li>
                 <li>We will respond within 30 days</li>
