@@ -22,7 +22,9 @@ function ResourceLinks({
   return (
     <div>
       <div className="mb-3 flex items-center gap-2">
-        <span className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] ${toneStyles}`}>
+        <span
+          className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] ${toneStyles}`}
+        >
           {title}
         </span>
       </div>
@@ -69,7 +71,11 @@ export default function MissingSkills({ skills, resources = [] }: MissingSkillsP
                 <p className="mt-2 text-sm leading-6 text-slate-400">{resource.reason}</p>
               </div>
               <div className="space-y-4">
-                <ResourceLinks title="Free courses first" items={resource.freeCourses} tone="free" />
+                <ResourceLinks
+                  title="Free courses first"
+                  items={resource.freeCourses}
+                  tone="free"
+                />
                 <ResourceLinks title="Paid options" items={resource.paidCourses} tone="paid" />
               </div>
             </div>

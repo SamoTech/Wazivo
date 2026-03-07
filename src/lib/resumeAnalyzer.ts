@@ -56,7 +56,9 @@ function enrichAnalysis(
   summary: string,
   parsedRoles: string[] = []
 ): ResumeAnalysis {
-  const recommendedRoles = [...new Set([...parsedRoles, ...inferRecommendedRoles(resumeText, skills, careerLevel)])].slice(0, 4);
+  const recommendedRoles = [
+    ...new Set([...parsedRoles, ...inferRecommendedRoles(resumeText, skills, careerLevel)]),
+  ].slice(0, 4);
   const jobSearchLinks = buildJobSearchLinks(recommendedRoles, skills, careerLevel);
   const missingSkillResources = buildMissingSkillResources(missingSkills);
   const score = calculateATSScore(resumeText, {

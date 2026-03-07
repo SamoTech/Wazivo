@@ -286,8 +286,8 @@ export default function ResumeUpload() {
         ) : (
           <div className="rounded-[2rem] border border-dashed border-white/10 bg-white/5 p-8 text-sm leading-7 text-slate-300">
             Results will appear here after analysis. You will get a score, detected skills, missing
-            skill gaps, smart job links, free-first learning suggestions, strengths, weaknesses,
-            and a professional readiness report.
+            skill gaps, smart job links, free-first learning suggestions, strengths, weaknesses, and
+            a professional readiness report.
           </div>
         )}
 
