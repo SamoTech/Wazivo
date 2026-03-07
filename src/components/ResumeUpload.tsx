@@ -202,10 +202,7 @@ export default function ResumeUpload() {
 
           <div>
             <div className="mb-2 flex items-center justify-between gap-3">
-              <label
-                htmlFor="jobDescription"
-                className="block text-sm font-medium text-slate-200"
-              >
+              <label htmlFor="jobDescription" className="block text-sm font-medium text-slate-200">
                 Job description for cover letter
               </label>
               <button
