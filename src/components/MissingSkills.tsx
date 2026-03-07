@@ -1,6 +1,8 @@
 import type { MissingSkillResource } from '../lib/careerResources';
+import { getDictionary, type Locale } from '../lib/i18n';
 
 type MissingSkillsProps = {
+  locale: Locale;
   skills: string[];
   resources?: MissingSkillResource[];
 };
@@ -22,9 +24,7 @@ function ResourceLinks({
   return (
     <div>
       <div className="mb-3 flex items-center gap-2">
-        <span
-          className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] ${toneStyles}`}
-        >
+        <span className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] ${toneStyles}`}>
           {title}
         </span>
       </div>
@@ -45,18 +45,18 @@ function ResourceLinks({
   );
 }
 
-export default function MissingSkills({ skills, resources = [] }: MissingSkillsProps) {
+export default function MissingSkills({ locale, skills, resources = [] }: MissingSkillsProps) {
+  const dict = getDictionary(locale);
+
   return (
     <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-white">Missing market skills</h3>
-          <p className="mt-1 text-sm text-slate-400">
-            Prioritized gaps with free learning paths first, then paid options.
-          </p>
+          <h3 className="text-lg font-semibold text-white">{dict.missingSkills.title}</h3>
+          <p className="mt-1 text-sm text-slate-400">{dict.missingSkills.description}</p>
         </div>
         <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-amber-200">
-          Priority gaps
+          {dict.missingSkills.badge}
         </span>
       </div>
       <div className="space-y-4">
@@ -71,12 +71,8 @@ export default function MissingSkills({ skills, resources = [] }: MissingSkillsP
                 <p className="mt-2 text-sm leading-6 text-slate-400">{resource.reason}</p>
               </div>
               <div className="space-y-4">
-                <ResourceLinks
-                  title="Free courses first"
-                  items={resource.freeCourses}
-                  tone="free"
-                />
-                <ResourceLinks title="Paid options" items={resource.paidCourses} tone="paid" />
+                <ResourceLinks title={dict.missingSkills.free} items={resource.freeCourses} tone="free" />
+                <ResourceLinks title={dict.missingSkills.paid} items={resource.paidCourses} tone="paid" />
               </div>
             </div>
           ))
@@ -90,9 +86,7 @@ export default function MissingSkills({ skills, resources = [] }: MissingSkillsP
             </div>
           ))
         ) : (
-          <p className="text-sm text-slate-400">
-            No major missing skills detected for the current profile.
-          </p>
+          <p className="text-sm text-slate-400">{dict.missingSkills.empty}</p>
         )}
       </div>
     </section>

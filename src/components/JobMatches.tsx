@@ -3,8 +3,10 @@
 import { useMemo } from 'react';
 
 import { buildJobSearchLinks, type JobSearchLink } from '../lib/careerResources';
+import { getDictionary, type Locale } from '../lib/i18n';
 
 type JobMatchesProps = {
+  locale: Locale;
   roles: string[];
   links: JobSearchLink[];
   skills: string[];
@@ -13,7 +15,8 @@ type JobMatchesProps = {
 
 const REGIONS = ['Egypt', 'Gulf', 'Remote'] as const;
 
-export default function JobMatches({ roles, links, skills, careerLevel }: JobMatchesProps) {
+export default function JobMatches({ locale, roles, links, skills, careerLevel }: JobMatchesProps) {
+  const dict = getDictionary(locale);
   const resolvedLinks = useMemo(() => {
     if (links.length) {
       return links;
@@ -38,13 +41,11 @@ export default function JobMatches({ roles, links, skills, careerLevel }: JobMat
     <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-white">Find jobs</h3>
-          <p className="mt-1 text-sm text-slate-400">
-            Smart job-search links generated from your CV for Egypt, Gulf, and remote markets.
-          </p>
+          <h3 className="text-lg font-semibold text-white">{dict.jobs.title}</h3>
+          <p className="mt-1 text-sm text-slate-400">{dict.jobs.description}</p>
         </div>
         <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-emerald-200">
-          Smart links
+          {dict.jobs.badge}
         </span>
       </div>
 
@@ -66,10 +67,8 @@ export default function JobMatches({ roles, links, skills, careerLevel }: JobMat
           return (
             <div key={region} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
               <div className="mb-4">
-                <h4 className="text-base font-semibold text-white">{region}</h4>
-                <p className="mt-1 text-xs leading-5 text-slate-400">
-                  Search using the strongest role detected from the CV.
-                </p>
+                <h4 className="text-base font-semibold text-white">{dict.jobs.regions[region]}</h4>
+                <p className="mt-1 text-xs leading-5 text-slate-400">{dict.jobs.regionHint}</p>
               </div>
               {regionLinks.length ? (
                 <div className="flex flex-wrap gap-2">
@@ -85,9 +84,7 @@ export default function JobMatches({ roles, links, skills, careerLevel }: JobMat
                   ))}
                 </div>
               ) : (
-                <p className="text-xs leading-6 text-slate-500">
-                  Job links will appear after the role and market query are generated.
-                </p>
+                <p className="text-xs leading-6 text-slate-500">{dict.jobs.empty}</p>
               )}
             </div>
           );
