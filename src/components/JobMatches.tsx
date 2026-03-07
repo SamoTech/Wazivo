@@ -2,10 +2,7 @@
 
 import { useMemo } from 'react';
 
-import {
-  buildJobSearchLinks,
-  type JobSearchLink,
-} from '../lib/careerResources';
+import { buildJobSearchLinks, type JobSearchLink } from '../lib/careerResources';
 
 type JobMatchesProps = {
   roles: string[];
