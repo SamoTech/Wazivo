@@ -67,7 +67,9 @@ export default function JobMatches({ locale, roles, links, skills, careerLevel }
           return (
             <div key={region} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <div className="mb-4">
-                <h4 className="text-base font-semibold text-slate-900">{dict.jobs.regions[region]}</h4>
+                <h4 className="text-base font-semibold text-slate-900">
+                  {dict.jobs.regions[region]}
+                </h4>
                 <p className="mt-1 text-xs leading-5 text-slate-600">{dict.jobs.regionHint}</p>
               </div>
               {regionLinks.length ? (

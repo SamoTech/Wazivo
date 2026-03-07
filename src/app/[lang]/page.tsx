@@ -46,12 +46,16 @@ export default function LocalizedHomePage({ params }: { params: { lang: string }
             </div>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-50 via-cyan-50 to-violet-50 p-6 shadow-lg">
-            <div className={`space-y-5 rounded-[1.35rem] border border-slate-200 bg-white p-6 ${textAlign}`}>
+            <div
+              className={`space-y-5 rounded-[1.35rem] border border-slate-200 bg-white p-6 ${textAlign}`}
+            >
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
                   {dict.hero.trustEyebrow}
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-900">{dict.hero.trustTitle}</h2>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+                  {dict.hero.trustTitle}
+                </h2>
               </div>
               <ul className="space-y-3 text-sm leading-6 text-slate-600">
                 {dict.hero.trustItems.map((item) => (
