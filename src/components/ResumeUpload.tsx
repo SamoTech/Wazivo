@@ -17,6 +17,10 @@ type AnalyzeResponse = {
   cached?: boolean;
 };
 
+function normalizePastedText(value: string) {
+  return value.replace(/\r\n/g, '\n').replace(/\u00a0/g, ' ');
+}
+
 export default function ResumeUpload() {
   const [resumeText, setResumeText] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -33,6 +37,48 @@ export default function ResumeUpload() {
 
   async function parseJson<T>(response: Response): Promise<T> {
     return (await response.json()) as T;
+  }
+
+  async function pasteFromClipboard(target: 'resume' | 'jobDescription') {
+    setError('');
+
+    try {
+      if (!navigator.clipboard?.readText) {
+        throw new Error('Clipboard paste is not supported in this browser.');
+      }
+
+      const clipboardText = normalizePastedText(await navigator.clipboard.readText());
+
+      if (!clipboardText.trim()) {
+        throw new Error('Clipboard is empty. Copy the CV first, then paste again.');
+      }
+
+      if (target === 'resume') {
+        setResumeText(clipboardText);
+      } else {
+        setJobDescription(clipboardText);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Unable to access clipboard. Try Ctrl+V or long-press paste.'
+      );
+    }
+  }
+
+  function handleNativePaste(
+    event: React.ClipboardEvent<HTMLTextAreaElement>,
+    target: 'resume' | 'jobDescription'
+  ) {
+    event.preventDefault();
+    const pastedText = normalizePastedText(event.clipboardData.getData('text'));
+
+    if (target === 'resume') {
+      setResumeText(pastedText);
+    } else {
+      setJobDescription(pastedText);
+    }
   }
 
   async function handleAnalyze() {
@@ -126,33 +172,59 @@ export default function ResumeUpload() {
 
         <div className="space-y-5">
           <div>
-            <label htmlFor="resume" className="mb-2 block text-sm font-medium text-slate-200">
-              Resume text
-            </label>
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <label htmlFor="resume" className="block text-sm font-medium text-slate-200">
+                Resume text
+              </label>
+              <button
+                type="button"
+                onClick={() => pasteFromClipboard('resume')}
+                className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10"
+              >
+                Paste CV
+              </button>
+            </div>
             <textarea
               id="resume"
               value={resumeText}
               onChange={(event) => setResumeText(event.target.value)}
+              onPaste={(event) => handleNativePaste(event, 'resume')}
               placeholder="Paste the full resume here..."
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
               className="min-h-[300px] w-full rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
             />
             <p className="mt-2 text-xs text-slate-400">
-              Minimum 120 characters. The analyze endpoint is limited for anonymous usage.
+              Minimum 120 characters. Use Ctrl+V, long-press paste, or the Paste CV button.
             </p>
           </div>
 
           <div>
-            <label
-              htmlFor="jobDescription"
-              className="mb-2 block text-sm font-medium text-slate-200"
-            >
-              Job description for cover letter
-            </label>
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <label
+                htmlFor="jobDescription"
+                className="block text-sm font-medium text-slate-200"
+              >
+                Job description for cover letter
+              </label>
+              <button
+                type="button"
+                onClick={() => pasteFromClipboard('jobDescription')}
+                className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-200 transition hover:bg-white/10"
+              >
+                Paste JD
+              </button>
+            </div>
             <textarea
               id="jobDescription"
               value={jobDescription}
               onChange={(event) => setJobDescription(event.target.value)}
+              onPaste={(event) => handleNativePaste(event, 'jobDescription')}
               placeholder="Paste the target job description here..."
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
               className="min-h-[180px] w-full rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20"
             />
           </div>
