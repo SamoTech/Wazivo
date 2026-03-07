@@ -1,14 +1,39 @@
-import type { JobSearchLink } from '../lib/careerResources';
+'use client';
+
+import { useMemo } from 'react';
+
+import {
+  buildJobSearchLinks,
+  type JobSearchLink,
+} from '../lib/careerResources';
 
 type JobMatchesProps = {
   roles: string[];
   links: JobSearchLink[];
+  skills: string[];
+  careerLevel: string;
 };
 
 const REGIONS = ['Egypt', 'Gulf', 'Remote'] as const;
 
-export default function JobMatches({ roles, links }: JobMatchesProps) {
-  if (!roles.length && !links.length) {
+export default function JobMatches({ roles, links, skills, careerLevel }: JobMatchesProps) {
+  const resolvedLinks = useMemo(() => {
+    if (links.length) {
+      return links;
+    }
+
+    return buildJobSearchLinks(roles, skills, careerLevel);
+  }, [careerLevel, links, roles, skills]);
+
+  function openJobLink(url: string) {
+    const newTab = window.open(url, '_blank', 'noopener,noreferrer');
+
+    if (!newTab) {
+      window.location.href = url;
+    }
+  }
+
+  if (!roles.length && !resolvedLinks.length) {
     return null;
   }
 
@@ -39,7 +64,7 @@ export default function JobMatches({ roles, links }: JobMatchesProps) {
 
       <div className="grid gap-5 lg:grid-cols-3">
         {REGIONS.map((region) => {
-          const regionLinks = links.filter((link) => link.region === region);
+          const regionLinks = resolvedLinks.filter((link) => link.region === region);
 
           return (
             <div key={region} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
@@ -49,19 +74,24 @@ export default function JobMatches({ roles, links }: JobMatchesProps) {
                   Search using the strongest role detected from the CV.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {regionLinks.map((link) => (
-                  <a
-                    key={`${region}-${link.platform}`}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] text-slate-200 transition hover:bg-white/10"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
+              {regionLinks.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {regionLinks.map((link) => (
+                    <button
+                      key={`${region}-${link.platform}`}
+                      type="button"
+                      onClick={() => openJobLink(link.url)}
+                      className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] text-slate-200 transition hover:bg-white/10"
+                    >
+                      {link.label}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs leading-6 text-slate-500">
+                  Job links will appear after the role and market query are generated.
+                </p>
+              )}
             </div>
           );
         })}
