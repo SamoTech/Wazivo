@@ -24,6 +24,7 @@ export type MissingSkillResource = {
 type PlatformDefinition = {
   name: string;
   buildUrl: (query: string) => string;
+  regions: JobRegion[];
 };
 
 const REGION_QUERIES: Record<JobRegion, string> = {
@@ -44,46 +45,57 @@ const JOB_PLATFORMS: PlatformDefinition[] = [
   {
     name: 'LinkedIn',
     buildUrl: (query) => `https://www.linkedin.com/jobs/search/?keywords=${encode(query)}`,
+    regions: ['Egypt', 'Gulf', 'Remote'],
   },
   {
     name: 'Indeed',
     buildUrl: (query) => `https://www.indeed.com/jobs?q=${encode(query)}`,
+    regions: ['Egypt', 'Remote'],
   },
   {
     name: 'Bayt',
     buildUrl: (query) => googleSiteSearch('bayt.com', query),
+    regions: ['Egypt', 'Gulf'],
   },
   {
     name: 'Glassdoor',
     buildUrl: (query) => `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${encode(query)}`,
+    regions: ['Egypt', 'Remote'],
   },
   {
     name: 'Wuzzuf',
     buildUrl: (query) => `https://wuzzuf.net/search/jobs/?q=${encode(query)}`,
+    regions: ['Egypt'],
   },
   {
     name: 'Naukrigulf',
     buildUrl: (query) => googleSiteSearch('naukrigulf.com', query),
+    regions: ['Gulf'],
   },
   {
     name: 'GulfTalent',
     buildUrl: (query) => googleSiteSearch('gulftalent.com', query),
+    regions: ['Gulf'],
   },
   {
     name: 'Monster Gulf',
     buildUrl: (query) => googleSiteSearch('monstergulf.com', query),
+    regions: ['Gulf'],
   },
   {
     name: 'Wellfound',
     buildUrl: (query) => googleSiteSearch('wellfound.com/jobs', query),
+    regions: ['Remote'],
   },
   {
     name: 'Remote OK',
     buildUrl: (query) => googleSiteSearch('remoteok.com', query),
+    regions: ['Remote'],
   },
   {
     name: 'Remotive',
     buildUrl: (query) => googleSiteSearch('remotive.com/remote-jobs', query),
+    regions: ['Remote'],
   },
 ];
 
@@ -200,13 +212,15 @@ export function buildJobSearchLinks(
   return (Object.keys(REGION_QUERIES) as JobRegion[]).flatMap((region) => {
     const query = buildSearchQuery(primaryRole, skills, careerLevel, region);
 
-    return JOB_PLATFORMS.map((platform) => ({
-      region,
-      platform: platform.name,
-      label: platform.name,
-      query,
-      url: platform.buildUrl(query),
-    }));
+    return JOB_PLATFORMS.filter((platform) => platform.regions.includes(region)).map(
+      (platform) => ({
+        region,
+        platform: platform.name,
+        label: platform.name,
+        query,
+        url: platform.buildUrl(query),
+      })
+    );
   });
 }
 
