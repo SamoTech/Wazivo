@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (!limit.allowed) {
       return NextResponse.json(
         { error: 'Daily analysis limit reached. Please try again later.' },
-        { status: 429, headers: { 'X-RateLimit-Remaining': String(limit.remaining) } }
+        { status: 429, headers: { 'X-RateLimit-Remaining': String(limit.remaining) } },
       );
     }
 
@@ -28,13 +28,13 @@ export async function POST(request: NextRequest) {
 
     ensureTextLength(resumeText, 'Resume text', 120, 12000);
 
-    const cacheKey = `analysis:${hashText(resumeText)}`;
+    const cacheKey = `analysis:v2:${hashText(resumeText)}`;
     const cached = await getCachedJSON<ResumeAnalysis>(cacheKey);
 
     if (cached) {
       return NextResponse.json(
         { data: cached, cached: true },
-        { headers: { 'X-RateLimit-Remaining': String(limit.remaining) } }
+        { headers: { 'X-RateLimit-Remaining': String(limit.remaining) } },
       );
     }
 
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { data: analysis, cached: false },
-      { headers: { 'X-RateLimit-Remaining': String(limit.remaining) } }
+      { headers: { 'X-RateLimit-Remaining': String(limit.remaining) } },
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unable to analyze resume.';

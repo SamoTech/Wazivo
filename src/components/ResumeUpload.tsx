@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 
+import JobMatches from './JobMatches';
 import MissingSkills from './MissingSkills';
 import Report from './Report';
 import ScoreCard from './ScoreCard';
@@ -269,16 +270,24 @@ export default function ResumeUpload() {
               careerLevel={analysis.career_level}
               summary={analysis.summary}
             />
+            <JobMatches
+              roles={analysis.recommended_roles ?? []}
+              links={analysis.job_search_links ?? []}
+            />
             <div className="grid gap-6 xl:grid-cols-2">
               <SkillsList skills={analysis.skills} />
-              <MissingSkills skills={analysis.missing_skills} />
+              <MissingSkills
+                skills={analysis.missing_skills}
+                resources={analysis.missing_skill_resources ?? []}
+              />
             </div>
             <Report analysis={analysis} />
           </>
         ) : (
           <div className="rounded-[2rem] border border-dashed border-white/10 bg-white/5 p-8 text-sm leading-7 text-slate-300">
             Results will appear here after analysis. You will get a score, detected skills, missing
-            skill gaps, strengths, weaknesses, and a professional readiness report.
+            skill gaps, smart job links, free-first learning suggestions, strengths, weaknesses,
+            and a professional readiness report.
           </div>
         )}
 

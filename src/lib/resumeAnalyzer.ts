@@ -1,5 +1,12 @@
 import { calculateATSScore } from './atsScore';
 import {
+  buildJobSearchLinks,
+  buildMissingSkillResources,
+  inferRecommendedRoles,
+  type JobSearchLink,
+  type MissingSkillResource,
+} from './careerResources';
+import {
   cover_letter_prompt,
   resume_analysis_prompt,
   resume_rewrite_prompt,
@@ -15,6 +22,9 @@ export type ResumeAnalysis = {
   strengths: string[];
   weaknesses: string[];
   summary: string;
+  recommended_roles: string[];
+  job_search_links: JobSearchLink[];
+  missing_skill_resources: MissingSkillResource[];
 };
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -34,6 +44,40 @@ function extractJson(content: string) {
   }
 
   return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1)) as Partial<ResumeAnalysis>;
+}
+
+function enrichAnalysis(
+  resumeText: string,
+  skills: string[],
+  careerLevel: string,
+  missingSkills: string[],
+  strengths: string[],
+  weaknesses: string[],
+  summary: string,
+  parsedRoles: string[] = []
+): ResumeAnalysis {
+  const recommendedRoles = [...new Set([...parsedRoles, ...inferRecommendedRoles(resumeText, skills, careerLevel)])].slice(0, 4);
+  const jobSearchLinks = buildJobSearchLinks(recommendedRoles, skills, careerLevel);
+  const missingSkillResources = buildMissingSkillResources(missingSkills);
+  const score = calculateATSScore(resumeText, {
+    skills,
+    missing_skills: missingSkills,
+    strengths,
+    weaknesses,
+  });
+
+  return {
+    score,
+    career_level: careerLevel,
+    skills,
+    missing_skills: missingSkills,
+    strengths,
+    weaknesses,
+    summary,
+    recommended_roles: recommendedRoles,
+    job_search_links: jobSearchLinks,
+    missing_skill_resources: missingSkillResources,
+  };
 }
 
 function buildFallbackAnalysis(resumeText: string): ResumeAnalysis {
@@ -63,23 +107,15 @@ function buildFallbackAnalysis(resumeText: string): ResumeAnalysis {
       : 'Resume should include a dedicated skills section for ATS readability.',
   ].filter(Boolean);
 
-  const score = calculateATSScore(resumeText, {
+  return enrichAnalysis(
+    resumeText,
     skills,
-    missing_skills: missingSkills,
+    careerLevel,
+    missingSkills,
     strengths,
     weaknesses,
-  });
-
-  return {
-    score,
-    career_level: careerLevel,
-    skills,
-    missing_skills: missingSkills,
-    strengths,
-    weaknesses,
-    summary:
-      'This resume shows a usable professional baseline, but clearer positioning, stronger keyword coverage, and more quantified achievements would improve ATS performance and recruiter clarity.',
-  };
+    'This resume shows a usable professional baseline, but clearer positioning, stronger keyword coverage, and more quantified achievements would improve ATS performance and recruiter clarity.'
+  );
 }
 
 async function callGroq(prompt: string, temperature = 0.2) {
@@ -145,22 +181,18 @@ export async function analyzeResume(resumeText: string): Promise<ResumeAnalysis>
     const weaknesses = uniqueStrings(parsed.weaknesses).length
       ? uniqueStrings(parsed.weaknesses)
       : heuristic.weaknesses;
-    const score = calculateATSScore(resumeText, {
-      skills,
-      missing_skills: missingSkills,
-      strengths,
-      weaknesses,
-    });
+    const summary = String(parsed.summary || heuristic.summary).trim();
 
-    return {
-      score,
-      career_level: careerLevel,
+    return enrichAnalysis(
+      resumeText,
       skills,
-      missing_skills: missingSkills,
+      careerLevel,
+      missingSkills,
       strengths,
       weaknesses,
-      summary: String(parsed.summary || heuristic.summary).trim(),
-    };
+      summary,
+      uniqueStrings(parsed.recommended_roles)
+    );
   } catch {
     return heuristic;
   }
