@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { rewriteResumeForATS } from '../../../../lib/resumeAnalyzer';
-import { ensureTextLength, getRequesterId, normalizeResumeInput, rateLimit } from '../../../../lib/runtime';
+import { rewriteResumeForATS } from '../../../lib/resumeAnalyzer';
+import { ensureTextLength, getRequesterId, normalizeResumeInput, rateLimit } from '../../../lib/runtime';
 
 export async function POST(request: NextRequest) {
   try {

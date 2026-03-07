@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { analyzeResume, type ResumeAnalysis } from '../../../../lib/resumeAnalyzer';
+import { analyzeResume, type ResumeAnalysis } from '../../../lib/resumeAnalyzer';
 import {
   ensureTextLength,
   getCachedJSON,
@@ -9,7 +9,7 @@ import {
   normalizeResumeInput,
   rateLimit,
   setCachedJSON,
-} from '../../../../lib/runtime';
+} from '../../../lib/runtime';
 
 export async function POST(request: NextRequest) {
   try {
