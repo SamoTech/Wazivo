@@ -73,8 +73,8 @@ export default function AffiliateDisclosure() {
             <h2 className="mt-8 text-xl font-semibold text-slate-900">Transparency</h2>
             <p className="leading-relaxed text-slate-700">
               This disclosure is made in accordance with the Federal Trade Commission's guidelines
-              on endorsements and testimonials. We believe in full transparency about how we
-              sustain our free service.
+              on endorsements and testimonials. We believe in full transparency about how we sustain
+              our free service.
             </p>
 
             <h2 className="mt-8 text-xl font-semibold text-slate-900">Questions?</h2>

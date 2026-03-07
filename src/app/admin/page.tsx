@@ -131,8 +131,8 @@ export default function AdminDashboard() {
         {/* Info banner */}
         <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-6">
           <p className="text-sm leading-relaxed text-blue-900">
-            <strong>Note:</strong> This dashboard tracks clicks from your browser only. For
-            official earnings and conversions, check your{' '}
+            <strong>Note:</strong> This dashboard tracks clicks from your browser only. For official
+            earnings and conversions, check your{' '}
             <a
               href="https://www.bayt.com/en/affiliates/reports/"
               target="_blank"
