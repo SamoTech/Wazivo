@@ -8,7 +8,7 @@ const SKILL_PATTERNS: Record<string, RegExp[]> = {
   Cloud: [/\baws\b/i, /\bazure\b/i, /\bgcp\b/i, /\bgoogle cloud\b/i, /\bvercel\b/i],
   DevOps: [/\bdocker\b/i, /\bkubernetes\b/i, /\bterraform\b/i, /\bci\/cd\b/i, /\bgithub actions\b/i],
   APIs: [/\brest\b/i, /\bgraphql\b/i, /\bapi\b/i],
-  Data Analysis: [/\bpandas\b/i, /\bnumpy\b/i, /\bpower bi\b/i, /\btableau\b/i, /\bexcel\b/i],
+  'Data Analysis': [/\bpandas\b/i, /\bnumpy\b/i, /\bpower bi\b/i, /\btableau\b/i, /\bexcel\b/i],
   AI: [/\bllm\b/i, /\bgroq\b/i, /\bopenai\b/i, /\bhugging face\b/i, /\bmachine learning\b/i, /\bartificial intelligence\b/i],
   Testing: [/\bjest\b/i, /\bplaywright\b/i, /\bcypress\b/i, /\bunit test/i],
   Product: [/\broadmap\b/i, /\bstakeholder\b/i, /\bproduct management\b/i, /\buser research\b/i],
