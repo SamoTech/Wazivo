@@ -1,131 +1,58 @@
-'use client';
-import { useState } from 'react';
-import FileUpload from './components/FileUpload';
-import LoadingState from './components/LoadingState';
-import AnalysisResults from './components/AnalysisResults';
-import ErrorBoundary from './components/ErrorBoundary';
-import { AnalysisReport } from './types';
-import { Briefcase } from 'lucide-react';
+import ResumeUpload from '../components/ResumeUpload';
 
-export default function Home() {
-  const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState<AnalysisReport | null>(null);
-  const [error, setError] = useState<string | null>(null);
+const highlights = [
+  'Structured AI resume scoring',
+  'ATS rewrite generation',
+  'Missing skill detection',
+  'Cover letter creation',
+];
 
-  const handleAnalyze = async (formData: FormData) => {
-    setLoading(true);
-    setError(null);
-    setProgress(0);
-
-    try {
-      console.log('[Home] Starting analysis...');
-
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setProgress(100);
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: 'Analysis failed' }));
-        const errorMessage = errorData.error || 'Analysis failed';
-        console.error('[Home] Analysis failed:', errorMessage, res.status);
-        throw new Error(errorMessage);
-      }
-
-      const data = await res.json();
-      console.log('[Home] Analysis successful');
-      setResult(data);
-    } catch (e: any) {
-      const errorMessage = e.message || 'An unexpected error occurred';
-      console.error('[Home] Error during analysis:', errorMessage, e);
-      setError(errorMessage);
-
-      // Send to error monitoring if configured
-      if (typeof window !== 'undefined' && (window as any).Sentry) {
-        (window as any).Sentry.captureException(e, {
-          tags: { component: 'Home', action: 'analyze' },
-        });
-      }
-    } finally {
-      setLoading(false);
-      setProgress(0);
-    }
-  };
-
-  const handleReset = () => {
-    setResult(null);
-    setError(null);
-    setProgress(0);
-  };
-
+export default function HomePage() {
   return (
-    <ErrorBoundary>
-      <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <header className="text-center mb-12">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Briefcase className="w-12 h-12 text-blue-600" aria-hidden="true" />
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-                Wazivo
+    <main className="min-h-screen bg-slate-950 text-slate-100">
+      <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-12 lg:px-10 lg:py-16">
+        <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+          <div className="space-y-6">
+            <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-sm font-medium text-emerald-200">
+              AI career assistant for modern hiring
+            </span>
+            <div className="space-y-4">
+              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                Turn any resume into a clear, ATS-ready hiring story.
               </h1>
+              <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
+                Wazivo analyzes resume quality, surfaces missing market skills, rewrites weak content, and helps candidates ship stronger applications without creating an account.
+              </p>
             </div>
-            <p className="text-2xl font-semibold text-gray-700 mb-2">Get Hired, Get Wazivo</p>
-            <p className="text-lg text-gray-600">
-              Lightning-fast AI resume analysis powered by Groq
-            </p>
-          </header>
-
-          {error && (
-            <div
-              className="max-w-2xl mx-auto mb-8 bg-red-50 border border-red-200 rounded-lg p-4"
-              role="alert"
-            >
-              <p className="text-red-700 font-medium">❌ {error}</p>
-              <p className="text-red-600 text-sm mt-1">Please try again or contact support</p>
-            </div>
-          )}
-
-          {/* Progress bar */}
-          {loading && progress > 0 && (
-            <div className="max-w-2xl mx-auto mb-8">
-              <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {highlights.map((item) => (
                 <div
-                  className="bg-blue-600 h-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                  role="progressbar"
-                  aria-valuenow={progress}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                />
-              </div>
+                  key={item}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm text-slate-200 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur"
+                >
+                  {item}
+                </div>
+              ))}
             </div>
-          )}
-
-          {loading ? (
-            <LoadingState />
-          ) : result ? (
-            <>
-              <button
-                onClick={handleReset}
-                className="mb-8 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg"
-                aria-label="Analyze another CV"
-              >
-                ← Analyze Another CV
-              </button>
-              <AnalysisResults report={result} />
-            </>
-          ) : (
-            <FileUpload onUpload={handleAnalyze} onProgress={setProgress} />
-          )}
-
-          <footer className="mt-16 text-center text-gray-500 text-sm">
-            <p>Built with ❤️ by SamoTech | Powered by Groq's Lightning-Fast AI ⚡</p>
-          </footer>
+          </div>
+          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-400/10 via-cyan-400/10 to-violet-500/10 p-6 shadow-2xl shadow-cyan-950/30">
+            <div className="space-y-5 rounded-[1.35rem] border border-white/10 bg-slate-950/70 p-6">
+              <div>
+                <p className="text-sm uppercase tracking-[0.24em] text-slate-400">Why teams will trust it</p>
+                <h2 className="mt-2 text-2xl font-semibold text-white">Built like a real product MVP</h2>
+              </div>
+              <ul className="space-y-3 text-sm leading-6 text-slate-300">
+                <li>Typed APIs with safe JSON responses</li>
+                <li>Groq-backed analysis with heuristic fallback</li>
+                <li>Hash-based caching and anonymous rate limiting</li>
+                <li>Responsive dashboard UI for analysis, rewrite, and cover letters</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </main>
-    </ErrorBoundary>
+
+        <ResumeUpload />
+      </section>
+    </main>
   );
 }
