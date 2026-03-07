@@ -22,29 +22,29 @@ export default function LocaleLayout({
     <div lang={lang} dir={rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col">
       <main className="flex-grow">{children}</main>
 
-      <footer className="mt-auto bg-gray-900 py-8 text-gray-300">
+      <footer className="mt-auto bg-slate-100 py-8 text-slate-700">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-6 grid grid-cols-1 gap-8 md:grid-cols-3">
             <div>
-              <h3 className="mb-3 font-semibold text-white">{dict.footer.aboutTitle}</h3>
-              <p className="text-sm text-gray-400">{dict.footer.aboutText}</p>
+              <h3 className="mb-3 font-semibold text-slate-900">{dict.footer.aboutTitle}</h3>
+              <p className="text-sm text-slate-600">{dict.footer.aboutText}</p>
             </div>
 
             <div>
-              <h3 className="mb-3 font-semibold text-white">{dict.footer.legal}</h3>
+              <h3 className="mb-3 font-semibold text-slate-900">{dict.footer.legal}</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/privacy" className="transition hover:text-white">
+                  <Link href="/privacy" className="transition hover:text-slate-900">
                     {dict.footer.privacy}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="transition hover:text-white">
+                  <Link href="/terms" className="transition hover:text-slate-900">
                     {dict.footer.terms}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="transition hover:text-white">
+                  <Link href="/contact" className="transition hover:text-slate-900">
                     {dict.footer.contact}
                   </Link>
                 </li>
@@ -52,20 +52,20 @@ export default function LocaleLayout({
             </div>
 
             <div>
-              <h3 className="mb-3 font-semibold text-white">{dict.footer.resources}</h3>
+              <h3 className="mb-3 font-semibold text-slate-900">{dict.footer.resources}</h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <a
                     href="https://github.com/SamoTech/Wazivo"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-white"
+                    className="transition hover:text-slate-900"
                   >
                     {dict.footer.github}
                   </a>
                 </li>
                 <li>
-                  <Link href="/contact" className="transition hover:text-white">
+                  <Link href="/contact" className="transition hover:text-slate-900">
                     {dict.footer.support}
                   </Link>
                 </li>
@@ -74,7 +74,7 @@ export default function LocaleLayout({
                     href="https://github.com/SamoTech/Wazivo/issues"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-white"
+                    className="transition hover:text-slate-900"
                   >
                     {dict.footer.reportIssue}
                   </a>
@@ -83,18 +83,18 @@ export default function LocaleLayout({
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-6 text-sm md:flex-row">
-            <p className="text-gray-400">
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 text-sm md:flex-row">
+            <p className="text-slate-600">
               © {new Date().getFullYear()} Wazivo. {dict.footer.rights}
             </p>
-            <div className="flex gap-6 text-gray-400">
-              <Link href="/privacy" className="transition hover:text-white">
+            <div className="flex gap-6 text-slate-600">
+              <Link href="/privacy" className="transition hover:text-slate-900">
                 {dict.footer.privacy}
               </Link>
-              <Link href="/terms" className="transition hover:text-white">
+              <Link href="/terms" className="transition hover:text-slate-900">
                 {dict.footer.terms}
               </Link>
-              <Link href="/contact" className="transition hover:text-white">
+              <Link href="/contact" className="transition hover:text-slate-900">
                 {dict.footer.contact}
               </Link>
             </div>

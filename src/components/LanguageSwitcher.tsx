@@ -10,17 +10,17 @@ export default function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
   const dict = getDictionary(locale);
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200">
-      <span className="text-slate-400">{dict.languageSwitch.current}</span>
+    <div className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm">
+      <span className="text-slate-500">{dict.languageSwitch.current}</span>
       <Link
         href="/en"
-        className={`rounded-xl px-3 py-1 transition ${locale === 'en' ? 'bg-white text-slate-950' : 'hover:bg-white/10'}`}
+        className={`rounded-xl px-3 py-1 transition ${locale === 'en' ? 'bg-slate-900 text-white' : 'hover:bg-slate-50'}`}
       >
         {dict.languageSwitch.en}
       </Link>
       <Link
         href="/ar"
-        className={`rounded-xl px-3 py-1 transition ${locale === 'ar' ? 'bg-white text-slate-950' : 'hover:bg-white/10'}`}
+        className={`rounded-xl px-3 py-1 transition ${locale === 'ar' ? 'bg-slate-900 text-white' : 'hover:bg-slate-50'}`}
       >
         {dict.languageSwitch.ar}
       </Link>

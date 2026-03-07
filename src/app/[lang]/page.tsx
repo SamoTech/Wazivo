@@ -15,7 +15,7 @@ export default function LocalizedHomePage({ params }: { params: { lang: string }
   const textAlign = rtl ? 'text-right' : 'text-left';
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 text-slate-900">
       <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-12 lg:px-10 lg:py-16">
         <div className="flex justify-end">
           <LanguageSwitcher locale={lang} />
@@ -23,14 +23,14 @@ export default function LocalizedHomePage({ params }: { params: { lang: string }
 
         <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <div className={`space-y-6 ${textAlign}`}>
-            <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-sm font-medium text-emerald-200">
+            <span className="inline-flex rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
               {dict.hero.badge}
             </span>
             <div className="space-y-4">
-              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
                 {dict.hero.title}
               </h1>
-              <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
+              <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
                 {dict.hero.description}
               </p>
             </div>
@@ -38,24 +38,22 @@ export default function LocalizedHomePage({ params }: { params: { lang: string }
               {dict.hero.highlights.map((item) => (
                 <div
                   key={item}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm text-slate-200 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur"
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700 shadow-sm"
                 >
                   {item}
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-400/10 via-cyan-400/10 to-violet-500/10 p-6 shadow-2xl shadow-cyan-950/30">
-            <div
-              className={`space-y-5 rounded-[1.35rem] border border-white/10 bg-slate-950/70 p-6 ${textAlign}`}
-            >
+          <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-50 via-cyan-50 to-violet-50 p-6 shadow-lg">
+            <div className={`space-y-5 rounded-[1.35rem] border border-slate-200 bg-white p-6 ${textAlign}`}>
               <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-slate-400">
+                <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
                   {dict.hero.trustEyebrow}
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">{dict.hero.trustTitle}</h2>
+                <h2 className="mt-2 text-2xl font-semibold text-slate-900">{dict.hero.trustTitle}</h2>
               </div>
-              <ul className="space-y-3 text-sm leading-6 text-slate-300">
+              <ul className="space-y-3 text-sm leading-6 text-slate-600">
                 {dict.hero.trustItems.map((item) => (
                   <li key={item}>{item}</li>
                 ))}

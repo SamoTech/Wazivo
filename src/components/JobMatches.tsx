@@ -38,13 +38,13 @@ export default function JobMatches({ locale, roles, links, skills, careerLevel }
   }
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-white">{dict.jobs.title}</h3>
-          <p className="mt-1 text-sm text-slate-400">{dict.jobs.description}</p>
+          <h3 className="text-lg font-semibold text-slate-900">{dict.jobs.title}</h3>
+          <p className="mt-1 text-sm text-slate-600">{dict.jobs.description}</p>
         </div>
-        <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-emerald-200">
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
           {dict.jobs.badge}
         </span>
       </div>
@@ -53,7 +53,7 @@ export default function JobMatches({ locale, roles, links, skills, careerLevel }
         {roles.map((role) => (
           <span
             key={role}
-            className="rounded-full border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-200"
+            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700"
           >
             {role}
           </span>
@@ -65,10 +65,10 @@ export default function JobMatches({ locale, roles, links, skills, careerLevel }
           const regionLinks = resolvedLinks.filter((link) => link.region === region);
 
           return (
-            <div key={region} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+            <div key={region} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <div className="mb-4">
-                <h4 className="text-base font-semibold text-white">{dict.jobs.regions[region]}</h4>
-                <p className="mt-1 text-xs leading-5 text-slate-400">{dict.jobs.regionHint}</p>
+                <h4 className="text-base font-semibold text-slate-900">{dict.jobs.regions[region]}</h4>
+                <p className="mt-1 text-xs leading-5 text-slate-600">{dict.jobs.regionHint}</p>
               </div>
               {regionLinks.length ? (
                 <div className="flex flex-wrap gap-2">
@@ -77,7 +77,7 @@ export default function JobMatches({ locale, roles, links, skills, careerLevel }
                       key={`${region}-${link.platform}`}
                       type="button"
                       onClick={() => openJobLink(link.url)}
-                      className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] text-slate-200 transition hover:bg-white/10"
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] text-slate-700 shadow-sm transition hover:bg-slate-50"
                     >
                       {link.label}
                     </button>
