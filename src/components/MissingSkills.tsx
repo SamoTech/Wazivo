@@ -14,12 +14,17 @@ export default function MissingSkills({ skills }: MissingSkillsProps) {
       <div className="space-y-3">
         {skills.length ? (
           skills.map((skill) => (
-            <div key={skill} className="rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-slate-200">
+            <div
+              key={skill}
+              className="rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-slate-200"
+            >
               {skill}
             </div>
           ))
         ) : (
-          <p className="text-sm text-slate-400">No major missing skills detected for the current profile.</p>
+          <p className="text-sm text-slate-400">
+            No major missing skills detected for the current profile.
+          </p>
         )}
       </div>
     </section>

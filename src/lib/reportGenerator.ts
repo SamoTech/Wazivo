@@ -9,15 +9,21 @@ export function buildReportSections(analysis: ResumeAnalysis): ReportSection[] {
   return [
     {
       title: 'Strengths',
-      items: analysis.strengths.length ? analysis.strengths : ['Solid baseline profile with clear career potential.'],
+      items: analysis.strengths.length
+        ? analysis.strengths
+        : ['Solid baseline profile with clear career potential.'],
     },
     {
       title: 'Missing Skills',
-      items: analysis.missing_skills.length ? analysis.missing_skills : ['No urgent market-skill gaps detected.'],
+      items: analysis.missing_skills.length
+        ? analysis.missing_skills
+        : ['No urgent market-skill gaps detected.'],
     },
     {
       title: 'Weaknesses',
-      items: analysis.weaknesses.length ? analysis.weaknesses : ['No major structural weaknesses detected.'],
+      items: analysis.weaknesses.length
+        ? analysis.weaknesses
+        : ['No major structural weaknesses detected.'],
     },
     {
       title: 'Career Insights',

@@ -21,7 +21,9 @@ export default function HomePage() {
                 Turn any resume into a clear, ATS-ready hiring story.
               </h1>
               <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-                Wazivo analyzes resume quality, surfaces missing market skills, rewrites weak content, and helps candidates ship stronger applications without creating an account.
+                Wazivo analyzes resume quality, surfaces missing market skills, rewrites weak
+                content, and helps candidates ship stronger applications without creating an
+                account.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -38,8 +40,12 @@ export default function HomePage() {
           <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-400/10 via-cyan-400/10 to-violet-500/10 p-6 shadow-2xl shadow-cyan-950/30">
             <div className="space-y-5 rounded-[1.35rem] border border-white/10 bg-slate-950/70 p-6">
               <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-slate-400">Why teams will trust it</p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">Built like a real product MVP</h2>
+                <p className="text-sm uppercase tracking-[0.24em] text-slate-400">
+                  Why teams will trust it
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-white">
+                  Built like a real product MVP
+                </h2>
               </div>
               <ul className="space-y-3 text-sm leading-6 text-slate-300">
                 <li>Typed APIs with safe JSON responses</li>

@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { generateCoverLetter } from '../../../lib/resumeAnalyzer';
-import { ensureTextLength, getRequesterId, normalizeResumeInput, rateLimit } from '../../../lib/runtime';
+import {
+  ensureTextLength,
+  getRequesterId,
+  normalizeResumeInput,
+  rateLimit,
+} from '../../../lib/runtime';
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,7 +14,10 @@ export async function POST(request: NextRequest) {
     const limit = await rateLimit(identifier, 'cover-letter', 10, 60 * 60);
 
     if (!limit.allowed) {
-      return NextResponse.json({ error: 'Too many cover letter requests. Please try again soon.' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Too many cover letter requests. Please try again soon.' },
+        { status: 429 }
+      );
     }
 
     const body = (await request.json().catch(() => null)) as {

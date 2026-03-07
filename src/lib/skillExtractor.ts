@@ -6,10 +6,23 @@ const SKILL_PATTERNS: Record<string, RegExp[]> = {
   SQL: [/\bsql\b/i, /\bpostgres\b/i, /\bmysql\b/i, /\bsqlite\b/i],
   NoSQL: [/\bmongodb\b/i, /\bredis\b/i, /\bfirestore\b/i],
   Cloud: [/\baws\b/i, /\bazure\b/i, /\bgcp\b/i, /\bgoogle cloud\b/i, /\bvercel\b/i],
-  DevOps: [/\bdocker\b/i, /\bkubernetes\b/i, /\bterraform\b/i, /\bci\/cd\b/i, /\bgithub actions\b/i],
+  DevOps: [
+    /\bdocker\b/i,
+    /\bkubernetes\b/i,
+    /\bterraform\b/i,
+    /\bci\/cd\b/i,
+    /\bgithub actions\b/i,
+  ],
   APIs: [/\brest\b/i, /\bgraphql\b/i, /\bapi\b/i],
   'Data Analysis': [/\bpandas\b/i, /\bnumpy\b/i, /\bpower bi\b/i, /\btableau\b/i, /\bexcel\b/i],
-  AI: [/\bllm\b/i, /\bgroq\b/i, /\bopenai\b/i, /\bhugging face\b/i, /\bmachine learning\b/i, /\bartificial intelligence\b/i],
+  AI: [
+    /\bllm\b/i,
+    /\bgroq\b/i,
+    /\bopenai\b/i,
+    /\bhugging face\b/i,
+    /\bmachine learning\b/i,
+    /\bartificial intelligence\b/i,
+  ],
   Testing: [/\bjest\b/i, /\bplaywright\b/i, /\bcypress\b/i, /\bunit test/i],
   Product: [/\broadmap\b/i, /\bstakeholder\b/i, /\bproduct management\b/i, /\buser research\b/i],
   Leadership: [/\bled\b/i, /\bmanaged\b/i, /\bmentored\b/i, /\bteam lead\b/i],
@@ -42,11 +55,14 @@ export function extractSkillsFromText(resumeText: string): string[] {
 
 export function inferCareerLevel(resumeText: string): string {
   const normalized = resumeText.toLowerCase();
-  const yearMatches = [...normalized.matchAll(/(\d{1,2})\+?\s+years?/g)].map((match) => Number(match[1]));
+  const yearMatches = [...normalized.matchAll(/(\d{1,2})\+?\s+years?/g)].map((match) =>
+    Number(match[1])
+  );
   const years = yearMatches.length ? Math.max(...yearMatches) : 0;
 
   if (/director|head of|vp|vice president|chief/i.test(resumeText)) return 'Executive';
-  if (/lead|principal|staff engineer|engineering manager/i.test(resumeText) || years >= 8) return 'Lead';
+  if (/lead|principal|staff engineer|engineering manager/i.test(resumeText) || years >= 8)
+    return 'Lead';
   if (/senior|sr\.|architect/i.test(resumeText) || years >= 5) return 'Senior';
   if (years >= 2) return 'Mid-level';
   return 'Entry-level';
@@ -64,7 +80,5 @@ export function suggestMissingSkills(skills: string[], careerLevel: string): str
     target.push('Leadership');
   }
 
-  return [...new Set(target)]
-    .filter((skill) => !owned.has(skill))
-    .slice(0, 6);
+  return [...new Set(target)].filter((skill) => !owned.has(skill)).slice(0, 6);
 }

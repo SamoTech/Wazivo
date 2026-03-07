@@ -22,7 +22,10 @@ export default function Report({ analysis }: ReportProps) {
 
       <div className="grid gap-5 lg:grid-cols-2">
         {sections.map((section) => (
-          <div key={section.title} className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+          <div
+            key={section.title}
+            className="rounded-2xl border border-white/10 bg-slate-900/60 p-5"
+          >
             <h4 className="text-base font-semibold text-white">{section.title}</h4>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
               {section.items.map((item) => (

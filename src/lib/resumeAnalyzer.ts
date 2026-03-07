@@ -5,11 +5,7 @@ import {
   resume_rewrite_prompt,
   AI_MODEL,
 } from './promptTemplates';
-import {
-  extractSkillsFromText,
-  inferCareerLevel,
-  suggestMissingSkills,
-} from './skillExtractor';
+import { extractSkillsFromText, inferCareerLevel, suggestMissingSkills } from './skillExtractor';
 
 export type ResumeAnalysis = {
   score: number;
@@ -58,9 +54,13 @@ function buildFallbackAnalysis(resumeText: string): ResumeAnalysis {
   ];
 
   const weaknesses = [
-    missingSkills.length ? `Missing or under-emphasized market skills such as ${missingSkills.slice(0, 3).join(', ')}.` : '',
+    missingSkills.length
+      ? `Missing or under-emphasized market skills such as ${missingSkills.slice(0, 3).join(', ')}.`
+      : '',
     /summary|profile/i.test(resumeText) ? '' : 'Resume lacks a clear professional summary section.',
-    /skills/i.test(resumeText) ? '' : 'Resume should include a dedicated skills section for ATS readability.',
+    /skills/i.test(resumeText)
+      ? ''
+      : 'Resume should include a dedicated skills section for ATS readability.',
   ].filter(Boolean);
 
   const score = calculateATSScore(resumeText, {
@@ -131,13 +131,20 @@ export async function analyzeResume(resumeText: string): Promise<ResumeAnalysis>
   try {
     const content = await callGroq(resume_analysis_prompt(resumeText));
     const parsed = extractJson(content);
-    const skills = [...new Set([...uniqueStrings(parsed.skills), ...heuristic.skills])].sort((a, b) => a.localeCompare(b));
-    const careerLevel = String(parsed.career_level || heuristic.career_level).trim() || heuristic.career_level;
+    const skills = [...new Set([...uniqueStrings(parsed.skills), ...heuristic.skills])].sort(
+      (a, b) => a.localeCompare(b)
+    );
+    const careerLevel =
+      String(parsed.career_level || heuristic.career_level).trim() || heuristic.career_level;
     const missingSkills = uniqueStrings(parsed.missing_skills).length
       ? uniqueStrings(parsed.missing_skills)
       : suggestMissingSkills(skills, careerLevel);
-    const strengths = uniqueStrings(parsed.strengths).length ? uniqueStrings(parsed.strengths) : heuristic.strengths;
-    const weaknesses = uniqueStrings(parsed.weaknesses).length ? uniqueStrings(parsed.weaknesses) : heuristic.weaknesses;
+    const strengths = uniqueStrings(parsed.strengths).length
+      ? uniqueStrings(parsed.strengths)
+      : heuristic.strengths;
+    const weaknesses = uniqueStrings(parsed.weaknesses).length
+      ? uniqueStrings(parsed.weaknesses)
+      : heuristic.weaknesses;
     const score = calculateATSScore(resumeText, {
       skills,
       missing_skills: missingSkills,
@@ -188,7 +195,9 @@ export async function rewriteResumeForATS(resumeText: string) {
 }
 
 function inferRoleFromJobDescription(jobDescription: string) {
-  const match = jobDescription.match(/(?:for|as|role of|position of)\s+([A-Z][A-Za-z0-9 \-/]{3,60})/i);
+  const match = jobDescription.match(
+    /(?:for|as|role of|position of)\s+([A-Z][A-Za-z0-9 \-/]{3,60})/i
+  );
   return match?.[1]?.trim() || 'the role';
 }
 

@@ -54,7 +54,11 @@ export function hashText(value: string) {
 }
 
 export function normalizeResumeInput(value: string) {
-  return value.replace(/\r\n/g, '\n').replace(/\t/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+  return value
+    .replace(/\r\n/g, '\n')
+    .replace(/\t/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 export function ensureTextLength(value: string, label: string, min: number, max: number) {
@@ -106,7 +110,12 @@ export async function setCachedJSON<T>(key: string, value: T, ttlSeconds: number
   });
 }
 
-export async function rateLimit(identifier: string, scope: string, limit: number, windowSeconds: number) {
+export async function rateLimit(
+  identifier: string,
+  scope: string,
+  limit: number,
+  windowSeconds: number
+) {
   const now = Date.now();
   const bucket = Math.floor(now / (windowSeconds * 1000));
   const key = `ratelimit:${scope}:${identifier}:${bucket}`;
@@ -127,7 +136,11 @@ export async function rateLimit(identifier: string, scope: string, limit: number
   const record = memoryRateLimit.get(key);
   if (!record || now > record.expiresAt) {
     memoryRateLimit.set(key, { count: 1, expiresAt: now + windowSeconds * 1000 });
-    return { allowed: true, remaining: Math.max(limit - 1, 0), resetAt: now + windowSeconds * 1000 };
+    return {
+      allowed: true,
+      remaining: Math.max(limit - 1, 0),
+      resetAt: now + windowSeconds * 1000,
+    };
   }
 
   record.count += 1;

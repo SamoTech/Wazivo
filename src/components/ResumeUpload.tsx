@@ -23,7 +23,9 @@ export default function ResumeUpload() {
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [rewrittenResume, setRewrittenResume] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
-  const [loadingAction, setLoadingAction] = useState<'analyze' | 'rewrite' | 'cover-letter' | null>(null);
+  const [loadingAction, setLoadingAction] = useState<'analyze' | 'rewrite' | 'cover-letter' | null>(
+    null
+  );
   const [error, setError] = useState('');
 
   const canAnalyze = useMemo(() => resumeText.trim().length >= 120, [resumeText]);
@@ -113,9 +115,12 @@ export default function ResumeUpload() {
       <section className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 backdrop-blur sm:p-7">
         <div className="mb-6 space-y-2">
           <p className="text-sm uppercase tracking-[0.22em] text-slate-400">Resume workspace</p>
-          <h2 className="text-2xl font-semibold text-white">Analyze, rewrite, and tailor applications</h2>
+          <h2 className="text-2xl font-semibold text-white">
+            Analyze, rewrite, and tailor applications
+          </h2>
           <p className="text-sm leading-6 text-slate-300">
-            Paste a resume to generate a hiring-ready report. Add a job description to create a customized cover letter.
+            Paste a resume to generate a hiring-ready report. Add a job description to create a
+            customized cover letter.
           </p>
         </div>
 
@@ -131,11 +136,16 @@ export default function ResumeUpload() {
               placeholder="Paste the full resume here..."
               className="min-h-[300px] w-full rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
             />
-            <p className="mt-2 text-xs text-slate-400">Minimum 120 characters. The analyze endpoint is limited for anonymous usage.</p>
+            <p className="mt-2 text-xs text-slate-400">
+              Minimum 120 characters. The analyze endpoint is limited for anonymous usage.
+            </p>
           </div>
 
           <div>
-            <label htmlFor="jobDescription" className="mb-2 block text-sm font-medium text-slate-200">
+            <label
+              htmlFor="jobDescription"
+              className="mb-2 block text-sm font-medium text-slate-200"
+            >
               Job description for cover letter
             </label>
             <textarea
@@ -174,14 +184,22 @@ export default function ResumeUpload() {
             </button>
           </div>
 
-          {error ? <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">{error}</div> : null}
+          {error ? (
+            <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">
+              {error}
+            </div>
+          ) : null}
         </div>
       </section>
 
       <section className="space-y-6">
         {analysis ? (
           <>
-            <ScoreCard score={analysis.score} careerLevel={analysis.career_level} summary={analysis.summary} />
+            <ScoreCard
+              score={analysis.score}
+              careerLevel={analysis.career_level}
+              summary={analysis.summary}
+            />
             <div className="grid gap-6 xl:grid-cols-2">
               <SkillsList skills={analysis.skills} />
               <MissingSkills skills={analysis.missing_skills} />
@@ -190,7 +208,8 @@ export default function ResumeUpload() {
           </>
         ) : (
           <div className="rounded-[2rem] border border-dashed border-white/10 bg-white/5 p-8 text-sm leading-7 text-slate-300">
-            Results will appear here after analysis. You will get a score, detected skills, missing skill gaps, strengths, weaknesses, and a professional readiness report.
+            Results will appear here after analysis. You will get a score, detected skills, missing
+            skill gaps, strengths, weaknesses, and a professional readiness report.
           </div>
         )}
 

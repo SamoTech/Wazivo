@@ -17,7 +17,9 @@ Rules:
 - summary must be 2-4 sentences.
 - Do not wrap JSON in markdown fences.`;
 
-export const resume_analysis_prompt = (resumeText: string) => `You are Wazivo, an expert AI resume reviewer and ATS specialist.
+export const resume_analysis_prompt = (
+  resumeText: string
+) => `You are Wazivo, an expert AI resume reviewer and ATS specialist.
 Analyze the resume below for hiring readiness, ATS compatibility, transferable skills, missing market skills, and role positioning.
 Prioritize practical hiring feedback over generic advice.
 
@@ -43,7 +45,10 @@ Resume:
 ${resumeText}
 """`;
 
-export const cover_letter_prompt = (resumeText: string, jobDescription: string) => `You are a professional career coach.
+export const cover_letter_prompt = (
+  resumeText: string,
+  jobDescription: string
+) => `You are a professional career coach.
 Write a tailored, persuasive cover letter in plain text based on the resume and job description below.
 Requirements:
 - Keep it professional, modern, and concise.
