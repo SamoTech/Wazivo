@@ -71,7 +71,8 @@ const dictionaries = {
     },
     jobs: {
       title: 'Find jobs',
-      description: 'Smart job-search links generated from your CV for Egypt, Gulf, and remote markets.',
+      description:
+        'Smart job-search links generated from your CV for Egypt, Gulf, and remote markets.',
       badge: 'Smart links',
       regionHint: 'Search using the strongest role detected from the CV.',
       empty: 'Job links will appear after the role and market query are generated.',

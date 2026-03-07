@@ -24,7 +24,9 @@ function ResourceLinks({
   return (
     <div>
       <div className="mb-3 flex items-center gap-2">
-        <span className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] ${toneStyles}`}>
+        <span
+          className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] ${toneStyles}`}
+        >
           {title}
         </span>
       </div>
@@ -71,8 +73,16 @@ export default function MissingSkills({ locale, skills, resources = [] }: Missin
                 <p className="mt-2 text-sm leading-6 text-slate-400">{resource.reason}</p>
               </div>
               <div className="space-y-4">
-                <ResourceLinks title={dict.missingSkills.free} items={resource.freeCourses} tone="free" />
-                <ResourceLinks title={dict.missingSkills.paid} items={resource.paidCourses} tone="paid" />
+                <ResourceLinks
+                  title={dict.missingSkills.free}
+                  items={resource.freeCourses}
+                  tone="free"
+                />
+                <ResourceLinks
+                  title={dict.missingSkills.paid}
+                  items={resource.paidCourses}
+                  tone="paid"
+                />
               </div>
             </div>
           ))

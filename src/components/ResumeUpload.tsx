@@ -159,9 +159,13 @@ export default function ResumeUpload({ locale }: { locale: Locale }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
-      <section className={`rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 backdrop-blur sm:p-7 ${textAlign}`}>
+      <section
+        className={`rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 backdrop-blur sm:p-7 ${textAlign}`}
+      >
         <div className="mb-6 space-y-2">
-          <p className="text-sm uppercase tracking-[0.22em] text-slate-400">{dict.upload.eyebrow}</p>
+          <p className="text-sm uppercase tracking-[0.22em] text-slate-400">
+            {dict.upload.eyebrow}
+          </p>
           <h2 className="text-2xl font-semibold text-white">{dict.upload.title}</h2>
           <p className="text-sm leading-6 text-slate-300">{dict.upload.description}</p>
         </div>
@@ -284,7 +288,9 @@ export default function ResumeUpload({ locale }: { locale: Locale }) {
             <Report analysis={analysis} />
           </>
         ) : (
-          <div className={`rounded-[2rem] border border-dashed border-white/10 bg-white/5 p-8 text-sm leading-7 text-slate-300 ${textAlign}`}>
+          <div
+            className={`rounded-[2rem] border border-dashed border-white/10 bg-white/5 p-8 text-sm leading-7 text-slate-300 ${textAlign}`}
+          >
             {dict.upload.emptyState}
           </div>
         )}
@@ -293,7 +299,9 @@ export default function ResumeUpload({ locale }: { locale: Locale }) {
           <div className={`rounded-[2rem] border border-white/10 bg-white/5 p-6 ${textAlign}`}>
             <div className="mb-3 flex items-center justify-between gap-4">
               <h3 className="text-lg font-semibold text-white">{dict.upload.atsRewrite}</h3>
-              <span className="text-xs uppercase tracking-[0.2em] text-cyan-200">{dict.upload.plainText}</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-cyan-200">
+                {dict.upload.plainText}
+              </span>
             </div>
             <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl bg-slate-950/90 p-4 text-sm leading-7 text-slate-200">
               {rewrittenResume}
@@ -305,7 +313,9 @@ export default function ResumeUpload({ locale }: { locale: Locale }) {
           <div className={`rounded-[2rem] border border-white/10 bg-white/5 p-6 ${textAlign}`}>
             <div className="mb-3 flex items-center justify-between gap-4">
               <h3 className="text-lg font-semibold text-white">{dict.upload.coverLetterTitle}</h3>
-              <span className="text-xs uppercase tracking-[0.2em] text-violet-200">{dict.upload.generated}</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-violet-200">
+                {dict.upload.generated}
+              </span>
             </div>
             <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl bg-slate-950/90 p-4 text-sm leading-7 text-slate-200">
               {coverLetter}

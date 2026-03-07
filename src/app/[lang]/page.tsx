@@ -46,7 +46,9 @@ export default function LocalizedHomePage({ params }: { params: { lang: string }
             </div>
           </div>
           <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-emerald-400/10 via-cyan-400/10 to-violet-500/10 p-6 shadow-2xl shadow-cyan-950/30">
-            <div className={`space-y-5 rounded-[1.35rem] border border-white/10 bg-slate-950/70 p-6 ${textAlign}`}>
+            <div
+              className={`space-y-5 rounded-[1.35rem] border border-white/10 bg-slate-950/70 p-6 ${textAlign}`}
+            >
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-slate-400">
                   {dict.hero.trustEyebrow}
