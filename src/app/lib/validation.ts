@@ -1,27 +1,26 @@
 import { FILE_SIZE, validateUrl } from './constants';
 
+export const MAX_FILE_SIZE = FILE_SIZE.MAX_BYTES;
+
 /**
  * Validate file size and type
  */
 export function isValidFile(file: File): { valid: boolean; error?: string } {
-  // Check file exists
   if (!file) {
     return { valid: false, error: 'No file selected' };
   }
 
-  // Check file size
   if (file.size === 0) {
     return { valid: false, error: 'File is empty' };
   }
 
-  if (file.size > FILE_SIZE.MAX_BYTES) {
+  if (file.size > MAX_FILE_SIZE) {
     return {
       valid: false,
       error: `File size (${(file.size / (1024 * 1024)).toFixed(2)} MB) exceeds maximum allowed size of ${FILE_SIZE.MAX_MB} MB`,
     };
   }
 
-  // Check file type
   const validTypes = [
     'application/pdf',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -33,7 +32,7 @@ export function isValidFile(file: File): { valid: boolean; error?: string } {
   if (!isValidType) {
     return {
       valid: false,
-      error: 'Invalid file type. Please upload PDF, DOCX, DOC, or image files.',
+      error: 'Unsupported file type. Please upload PDF, DOCX, DOC, or image files.',
     };
   }
 
@@ -48,13 +47,32 @@ export function isValidURL(url: string): boolean {
 }
 
 /**
+ * Normalize and sanitize URLs for safe usage
+ */
+export function sanitizeURL(url: string): string {
+  let parsed: URL;
+
+  try {
+    parsed = new URL(url.trim());
+  } catch {
+    throw new Error('Invalid URL format');
+  }
+
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    throw new Error('Invalid protocol');
+  }
+
+  return parsed.toString();
+}
+
+/**
  * Simple rate limiting using localStorage
  * @param key - Unique key for the action
  * @param maxAttempts - Maximum attempts allowed
  * @param windowMs - Time window in milliseconds
  */
 export function checkRateLimit(key: string, maxAttempts: number, windowMs: number): boolean {
-  if (typeof window === 'undefined') return true; // Server-side always allowed
+  if (typeof window === 'undefined') return true;
 
   const now = Date.now();
   const storageKey = `ratelimit_${key}`;
@@ -63,21 +81,17 @@ export function checkRateLimit(key: string, maxAttempts: number, windowMs: numbe
     const stored = localStorage.getItem(storageKey);
     const data = stored ? JSON.parse(stored) : { attempts: [], firstAttempt: now };
 
-    // Filter out attempts outside the time window
     data.attempts = data.attempts.filter((time: number) => now - time < windowMs);
 
-    // Check if limit exceeded
     if (data.attempts.length >= maxAttempts) {
       return false;
     }
 
-    // Add current attempt
     data.attempts.push(now);
     localStorage.setItem(storageKey, JSON.stringify(data));
 
     return true;
   } catch (error) {
-    // If localStorage fails (privacy mode, etc.), allow the request
     console.warn('Rate limiting unavailable:', error);
     return true;
   }
@@ -102,8 +116,8 @@ export function clearRateLimit(key: string): void {
 export function sanitizeInput(input: string): string {
   return input
     .trim()
-    .replace(/[<>"']/g, '') // Remove potentially dangerous characters
-    .slice(0, 1000); // Limit length
+    .replace(/[<>"']/g, '')
+    .slice(0, 1000);
 }
 
 /**
