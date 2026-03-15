@@ -1,93 +1,95 @@
-# Wazivo
-
 <div align="center">
 
-### Get Hired, Get Wazivo
+<img src="https://wazivo.vercel.app/favicon.ico" alt="Wazivo Logo" width="64" height="64" />
 
-AI-powered resume analysis, ATS optimization, smart job discovery, and guided skill improvement built with Next.js, TypeScript, Tailwind CSS, and Groq.
+# Wazivo — وظيفو
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18-20232A?logo=react)](https://react.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Groq](https://img.shields.io/badge/Groq-AI-orange)](https://groq.com/)
-[![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel)](https://vercel.com/)
-[![Repo Stars](https://img.shields.io/github/stars/SamoTech/Wazivo?style=social)](https://github.com/SamoTech/Wazivo/stargazers)
+### Your Intelligent Career Companion
+
+**AI-powered resume analysis, ATS optimization, smart job discovery, and guided skill improvement.**
+
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-wazivo.vercel.app-22c55e?style=for-the-badge)](https://wazivo.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Groq AI](https://img.shields.io/badge/Groq-AI-FF6B00?style=for-the-badge)](https://groq.com/)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
+
+[![GitHub Stars](https://img.shields.io/github/stars/SamoTech/Wazivo?style=social)](https://github.com/SamoTech/Wazivo/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/SamoTech/Wazivo?style=social)](https://github.com/SamoTech/Wazivo/network/members)
 [![Follow @SamoTech](https://img.shields.io/github/followers/SamoTech?style=social)](https://github.com/SamoTech)
-[![Sponsor](https://img.shields.io/badge/Sponsor-SamoTech-pink?logo=githubsponsors)](https://github.com/sponsors/SamoTech)
+[![Sponsor](https://img.shields.io/badge/💖_Sponsor-SamoTech-ea4aaa?style=flat-square&logo=githubsponsors)](https://github.com/sponsors/SamoTech)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/SamoTech/Wazivo/blob/main/LICENSE)
+
+[🌐 Live Product](https://wazivo.vercel.app/) · [🐛 Report Bug](https://github.com/SamoTech/Wazivo/issues/new) · [✨ Request Feature](https://github.com/SamoTech/Wazivo/issues/new) · [💖 Sponsor](https://github.com/sponsors/SamoTech)
 
 </div>
 
-## Overview
+---
 
-Wazivo is a production-ready AI resume toolkit that helps candidates analyze their CV, improve ATS readiness, generate better application material, discover relevant jobs, and learn missing skills faster.
+## 🚀 What is Wazivo?
 
-It now combines resume scoring, skill-gap detection, ATS rewriting, cover-letter generation, smart job-search links for Egypt, Gulf, and remote markets, plus free-first course recommendations directly inside the analysis flow.
+Wazivo is a production-ready AI career toolkit that helps job seekers analyze their CV, improve ATS readiness, generate better application material, discover relevant jobs, and learn missing skills faster.
 
-## Highlights
+It combines resume scoring, skill-gap detection, ATS rewriting, cover-letter generation, smart job-search links for Egypt, Gulf, and remote markets, plus free-first course recommendations — all in one guided flow.
 
-- Analyze resume text and generate a structured hiring-readiness score.
-- Detect core skills, career level, strengths, weaknesses, and missing market skills.
-- Rewrite resumes for ATS-friendly formatting and keyword coverage.
-- Generate tailored cover letters from resume text and job descriptions.
-- Create smart job-search links for Egypt, Gulf, and remote opportunities.
-- Suggest free courses first, then paid learning paths for each missing skill.
-- Support direct CV paste from the homepage with explicit clipboard actions.
-- Cache analysis results and rate limit anonymous usage.
+> **Try it now → [wazivo.vercel.app](https://wazivo.vercel.app/)**
 
-## What changed
+---
 
-The latest product flow extends the original resume analyzer into a guided job-readiness workspace.
+## ✨ Features
 
-- Smart job links are generated during CV analysis.
-- Missing skills now include learning resources inside the same section.
-- Separate platform buttons are shown for job search destinations.
-- Clipboard paste support was improved for CV and job description inputs.
-- Analysis caching was versioned to support the expanded response schema.
+- 📊 **Resume Scoring** — Analyze resume text and generate a structured hiring-readiness score
+- 🔍 **Skill Gap Detection** — Detect core skills, career level, strengths, weaknesses, and missing market skills
+- 🤖 **ATS Rewriting** — Rewrite resumes for ATS-friendly formatting and keyword coverage
+- ✉️ **Cover Letter Generator** — Generate tailored cover letters from resume text and job descriptions
+- 🌍 **Smart Job Links** — Instant search links for Egypt, Gulf, and remote opportunities
+- 📚 **Learning Paths** — Free-first course recommendations for every missing skill
+- 📋 **CV Paste Support** — Direct clipboard paste from the homepage
+- ⚡ **Caching & Rate Limiting** — Analysis results cached, anonymous usage rate-limited
 
-## Job platforms
+---
 
-Wazivo generates separate search links across multiple job destinations using the strongest detected role from the CV.
+## 🌍 Supported Job Platforms
 
-- LinkedIn
-- Indeed
-- Bayt
-- Glassdoor
-- Wuzzuf
-- Naukrigulf
-- GulfTalent
-- Monster Gulf
-- Wellfound
-- Remote OK
-- Remotive
+Wazivo generates targeted search links across 11 job platforms using the strongest detected role from your CV:
 
-## Tech stack
+| Platform | Region |
+|---|---|
+| LinkedIn | Global |
+| Indeed | Global |
+| Glassdoor | Global |
+| Wellfound | Global / Startups |
+| Remote OK | Remote |
+| Remotive | Remote |
+| Bayt | MENA |
+| Wuzzuf | Egypt |
+| Naukrigulf | Gulf |
+| GulfTalent | Gulf |
+| Monster Gulf | Gulf |
 
-### App framework
+---
 
+## 🛠️ Tech Stack
+
+### App Framework
 - Next.js 14 App Router
 - React 18
 - TypeScript
 - Tailwind CSS
 
-### AI and processing
-
-- Groq API
+### AI & Processing
+- Groq API (llama-3.3-70b-versatile)
 - OpenAI SDK client utilities
-- Zod
-- Axios
-- pdf-parse
-- Mammoth
-- Tesseract.js
+- Zod · Axios · pdf-parse · Mammoth · Tesseract.js
 
-### Quality and tooling
+### Quality & Tooling
+- Jest · Playwright · ESLint · Prettier
 
-- Jest
-- Playwright
-- ESLint
-- Prettier
+---
 
-## Project structure
+## 📁 Project Structure
 
 ```text
 src
@@ -114,63 +116,122 @@ src
     └── skillExtractor.ts
 ```
 
-## Environment variables
+---
 
-Create a `.env.local` file and add the following:
+## ⚙️ Getting Started
+
+### Prerequisites
+- Node.js 18+
+- A free [Groq API key](https://console.groq.com/)
+
+### Environment Variables
+
+Create a `.env.local` file:
 
 ```bash
 GROQ_API_KEY=your_groq_key
 GROQ_MODEL=llama-3.3-70b-versatile
+
+# Optional — falls back to in-memory if not set
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
 ```
 
-`UPSTASH_REDIS_*` values are optional. Without them, Wazivo falls back to in-memory caching and rate limiting for local development.
-
-## Run locally
+### Run Locally
 
 ```bash
+git clone https://github.com/SamoTech/Wazivo.git
+cd Wazivo
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Available scripts
+### Available Scripts
 
 ```bash
-npm run dev
-npm run build
-npm run start
-npm run lint
-npm run test
-npm run test:watch
-npm run test:coverage
-npm run test:e2e
-npm run type-check
-npm run format
-npm run format:check
+npm run dev            # Start development server
+npm run build          # Production build
+npm run start          # Start production server
+npm run lint           # Run ESLint
+npm run test           # Run unit tests
+npm run test:watch     # Watch mode
+npm run test:coverage  # Coverage report
+npm run test:e2e       # End-to-end tests
+npm run type-check     # TypeScript check
+npm run format         # Prettier format
+npm run format:check   # Check formatting
 ```
 
-## Product flow
+---
 
-1. Paste a resume into the main workspace.
-2. Run CV analysis to get the score, skills, weaknesses, and summary.
-3. Explore recommended roles and smart job links.
-4. Review missing skills and open free-first learning suggestions.
-5. Rewrite the resume for ATS.
-6. Generate a tailored cover letter from a target job description.
+## 🔄 Product Flow
 
-## Sponsor and profiles
+1. **Paste** your resume into the main workspace
+2. **Analyze** — get your score, skills, weaknesses, and summary
+3. **Explore** recommended roles and smart job links
+4. **Review** missing skills and open free-first learning suggestions
+5. **Rewrite** your resume for ATS
+6. **Generate** a tailored cover letter from a target job description
 
-Support the project and follow the builder here:
+---
 
-- GitHub profile: [github.com/SamoTech](https://github.com/SamoTech)
-- GitHub Sponsors: [github.com/sponsors/SamoTech](https://github.com/sponsors/SamoTech)
-- Repository: [github.com/SamoTech/Wazivo](https://github.com/SamoTech/Wazivo)
+## 🗺️ Roadmap
 
-## Why Wazivo
+- [ ] User accounts and saved resumes
+- [ ] Role-specific optimization profiles
+- [ ] PDF/DOCX export
+- [ ] Recruiter dashboard
+- [ ] Premium subscription plans
+- [ ] Arabic language support
 
-Wazivo is designed as an MVP that feels immediately useful to candidates, while staying practical to deploy and extend.
+---
 
-It is a strong base for future upgrades such as account systems, saved resumes, role-specific optimization, exports, recruiter dashboards, and premium plans.
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue first to discuss what you'd like to change.
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'feat: add your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+---
+
+## 💖 Sponsor
+
+If Wazivo saves you time or helps your job search, consider supporting the project:
+
+[![Sponsor SamoTech](https://img.shields.io/badge/💖_Sponsor_SamoTech-GitHub_Sponsors-ea4aaa?style=for-the-badge&logo=githubsponsors)](https://github.com/sponsors/SamoTech)
+
+Your sponsorship helps fund continued development, new features, and keeping the live demo free.
+
+---
+
+## 📬 Contact
+
+| | |
+|---|---|
+| **GitHub** | [@SamoTech](https://github.com/SamoTech) |
+| **Twitter / X** | [@OssamaHashim](https://twitter.com/OssamaHashim) |
+| **Email** | samo.hossam@gmail.com |
+| **Live Product** | [wazivo.vercel.app](https://wazivo.vercel.app/) |
+| **Sponsor** | [github.com/sponsors/SamoTech](https://github.com/sponsors/SamoTech) |
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+Built with ❤️ by [Ossama Hashim](https://github.com/SamoTech) · Cairo, Egypt
+
+⭐ Star this repo if you find it useful!
+
+</div>
