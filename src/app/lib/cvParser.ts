@@ -88,9 +88,13 @@ function detectLinkedInLoginWall(content: string): boolean {
     'be the first',
     'create your free account',
     'sign up',
+    'linkedin.com/login',
+    'linkedin.com/signup',
+    'security verification',
   ];
 
-  return loginSignals.some((signal) => lower.includes(signal)) && content.length < 1000;
+  // If we see login signals OR the content is extremely short, it's likely a block
+  return loginSignals.some((signal) => lower.includes(signal)) || content.length < 500;
 }
 
 /**
@@ -141,7 +145,7 @@ async function fetchViaJinaReader(url: string): Promise<string> {
     if (isLinkedIn(url) && detectLinkedInLoginWall(content)) {
       throw new CVParsingError(
         ErrorCodes.LOGIN_REQUIRED,
-        'LinkedIn requires login to view this profile. Please download as PDF and upload directly.',
+        'LinkedIn is currently blocking automated access to this profile. To proceed: Go to your LinkedIn profile → click "More" → "Save to PDF" → upload that PDF file to Wazivo instead.',
         { platform: 'LinkedIn' }
       );
     }
