@@ -1,6 +1,8 @@
 <div align="center">
 
-<img src="https://wazivo.vercel.app/favicon.ico" alt="Wazivo Logo" width="64" height="64" />
+![Wazivo](docs/assets/banner.svg)
+
+<img src="docs/assets/logo.svg" alt="Wazivo Logo" width="64" height="64" />
 
 # Wazivo — وظيفو
 
