@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300">
+  <defs>
+    <linearGradient id="bg-wz" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1a0f;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0d1f1a;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="accent-wz" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#4f98a3;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bg-wz)" rx="12"/>
+  <rect x="0" y="0" width="6" height="300" fill="url(#accent-wz)" rx="3"/>
+  <g transform="translate(55, 90)">
+    <rect x="5" y="32" width="70" height="52" rx="8" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="2"/>
+    <path d="M22 32 V24 C22 18 58 18 58 24 V32" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/>
+    <line x1="5" y1="55" x2="75" y2="55" stroke="#22c55e" stroke-width="1.5" stroke-opacity="0.5"/>
+    <circle cx="40" cy="55" r="5" fill="#22c55e"/>
+    <text x="30" y="48" font-family="serif" font-size="22" font-weight="700" fill="#22c55e" fill-opacity="0.4">و</text>
+  </g>
+  <text x="200" y="130" font-family="'Segoe UI', system-ui, sans-serif" font-size="70" font-weight="700" fill="#f0fdf4" letter-spacing="-2">Wazivo</text>
+  <text x="540" y="130" font-family="'Segoe UI', system-ui, sans-serif" font-size="38" font-weight="400" fill="#22c55e" fill-opacity="0.6">وظيفو</text>
+  <text x="202" y="172" font-family="'Segoe UI', system-ui, sans-serif" font-size="22" fill="#4ade80">AI Career Companion · ATS Optimizer · Job Discovery</text>
+  <rect x="202" y="196" width="130" height="28" rx="14" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-width="1"/>
+  <text x="267" y="215" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" fill="#4ade80" text-anchor="middle">Resume AI</text>
+  <rect x="344" y="196" width="130" height="28" rx="14" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-width="1"/>
+  <text x="409" y="215" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" fill="#4ade80" text-anchor="middle">Skill Gaps</text>
+  <rect x="486" y="196" width="130" height="28" rx="14" fill="#22c55e" fill-opacity="0.12" stroke="#22c55e" stroke-width="1"/>
+  <text x="551" y="215" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" fill="#4ade80" text-anchor="middle">11 Platforms</text>
+  <g transform="translate(900, 60)">
+    <circle cx="80" cy="80" r="72" fill="#0d1f1a" stroke="#22c55e" stroke-width="2" stroke-opacity="0.3"/>
+    <circle cx="80" cy="80" r="60" fill="none" stroke="#22c55e" stroke-width="8" stroke-opacity="0.15"/>
+    <path d="M80 20 A60 60 0 1 1 17 110" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round"/>
+    <text x="80" y="72" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" font-weight="700" fill="#4ade80" text-anchor="middle">ATS</text>
+    <text x="80" y="96" font-family="'Segoe UI', system-ui, sans-serif" font-size="14" fill="#4ade80" text-anchor="middle">Ready</text>
+    <text x="80" y="118" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" fill="#22c55e" text-anchor="middle" fill-opacity="0.7">Groq · Next.js</text>
+  </g>
+</svg>
